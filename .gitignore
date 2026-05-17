@@ -8,10 +8,39 @@ frontend/.env.local
 frontend/.env.*.local
 
 # ========================
+# Back (Spring Boot / Maven)
+# ========================
+backend/HELP.md
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+!backend/**/src/main/**/target/
+!backend/**/src/test/**/target/
+backend/build/
+!backend/**/src/main/**/build/
+!backend/**/src/test/**/build/
+
+### STS ###
+backend/.apt_generated
+backend/.classpath
+backend/.factorypath
+backend/.project
+backend/.settings
+backend/.springBeans
+backend/.sts4-cache
+
+### NetBeans ###
+backend/nbproject/private/
+backend/nbbuild/
+backend/nbdist/
+backend/.nb-gradle/
+
+# ========================
 # IDE
 # ========================
 .idea/
 *.iml
+*.iws
+*.ipr
 .vscode/
 *.swp
 

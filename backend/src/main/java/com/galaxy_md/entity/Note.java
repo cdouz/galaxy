@@ -18,4 +18,11 @@ public class Note {
 
     @Column
     private String contenu;
+
+    @Column
+    private String titre;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

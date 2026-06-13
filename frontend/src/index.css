@@ -67,3 +67,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+.jacques-francois {
+  font-family: "Jacques Francois", serif;
+  font-style: normal;
+}
+
+.text-milk{
+    color: #FBE4D6;
+}

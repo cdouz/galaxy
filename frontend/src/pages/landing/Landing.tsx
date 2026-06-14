@@ -1,9 +1,15 @@
 import './Landing.css'
 import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom"
 
 
 const Landing = () => {
-    
+  const navigate = useNavigate()
+
+  const goToNoteEdit = () => {
+    navigate('/note')
+  }
+
   return (
     <div className="landing flex flex-col h-screen">
         <div>
@@ -11,7 +17,9 @@ const Landing = () => {
         <h1 className="jacques-francois text-milk">Reveal a galaxy</h1>    
         </div>
         <div className="flex flex-col gap-4 justify-center items-center">
-            <Button variant="default">Login</Button>
+            <Button variant="default" onClick={goToNoteEdit}>
+                Login
+            </Button>
             <Button variant="outline">Register</Button>
         </div>
 

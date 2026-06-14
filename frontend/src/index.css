@@ -76,3 +76,7 @@
 .text-milk{
     color: #FBE4D6;
 }
+
+body{
+  background: linear-gradient(to right,#0a0b4b, #16176e);
+}

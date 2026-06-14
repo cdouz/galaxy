@@ -1,0 +1,6 @@
+.note-container {
+    height: 100%;
+    width: 80%;
+    justify-self : flex-end;
+    background-color: #b71c1c;
+}

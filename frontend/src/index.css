@@ -80,3 +80,10 @@
 body{
   background: linear-gradient(to right,#0a0b4b, #16176e);
 }
+
+:root{
+  --primary: #0a0b4b;
+  --secondary: #16176e;
+  --black: #020218;
+  --milk: #FBE4D6;
+}

@@ -1,5 +1,7 @@
 import { Settings, LayoutDashboard, Plus, Search, Waypoints, Info } from "lucide-react"
+import { useState } from "react"
 import { NavLink } from "react-router-dom"
+import './sidebar.css'
 
 type SidebarItem = {
   icon: React.ReactNode
@@ -19,31 +21,37 @@ const bottomItems: SidebarItem[] = [
   { icon: <Info size={18} />, label: "About", to: "/about" }
 ]
 
-const Item = ({ icon, label, to }: SidebarItem) => (
+const Item = ({ icon, label, to, expanded }: SidebarItem & { expanded: boolean }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `group flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-zinc-700 ${isActive ? "bg-zinc-700 text-white" : "text-zinc-400"}`
+      `flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-[var(--secondary)] ${isActive ? "bg-zinc-700 text-white" : "text-zinc-400"}`
     }
   >
     <span className="shrink-0">{icon}</span>
-    <span className="overflow-hidden whitespace-nowrap text-sm font-medium opacity-0 transition-all duration-200 group-hover:opacity-100 w-0 group-hover:w-24">
+    <span className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>
       {label}
     </span>
   </NavLink>
 )
 
 const Sidebar = () => {
+  const [expanded, setExpanded] = useState(false)
+
   return (
-    <aside className="group/sidebar flex h-screen w-12 hover:w-44 flex-col justify-between bg-zinc-900 px-2 py-4 transition-all duration-200 overflow-hidden shrink-0">
+    <aside
+      className={`flex h-screen flex-col justify-between px-2 py-4 transition-all duration-200 overflow-hidden shrink-0 ${expanded ? "w-44" : "w-12"}`}
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
+    >
       <nav className="flex flex-col gap-1">
         {topItems.map((item) => (
-          <Item key={item.to} {...item} />
+          <Item key={item.to} {...item} expanded={expanded} />
         ))}
       </nav>
       <nav className="flex flex-col gap-1">
         {bottomItems.map((item) => (
-          <Item key={item.to} {...item} />
+          <Item key={item.to} {...item} expanded={expanded} />
         ))}
       </nav>
     </aside>

@@ -1,9 +1,16 @@
 import './NoteContentContainer.css'
 
-const NoteContentContainer = () => {
+type Props = {
+  value: string
+  onChange: (value: string) => void
+}
+
+const NoteContentContainer = ({ value, onChange }: Props) => {
   return (
-      <div className="ncc flex-1 border-r border-zinc-700">
+      <div className="ncc border-r border-zinc-700">
         <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           className="w-full h-full resize-none bg-transparent p-6 font-mono text-sm outline-none"
           placeholder="Write markdown here..."
         />

@@ -1,5 +1,7 @@
 .nvc{
     border: 1px solid black;
     border-radius: 10px;
-    background-color:bisque;
+    background-color:var(--black);
+    height: 80%;
+    width: 40%;
 }

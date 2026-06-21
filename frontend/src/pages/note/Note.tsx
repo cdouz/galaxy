@@ -3,10 +3,19 @@ import NoteContentContainer from "../../components/NoteContentContainer/NoteCont
 import NoteVueContainer from "../../components/NoteVueContainer/NoteVueContainer"
 import Sidebar from "../../components/Sidebar/Sidebar"
 import './note.css'
+import { Button } from "@/components/ui/button"
 
 const Note = () => {
   const [content, setContent] = useState("")
+    const saveNote = () => {
 
+        console.log("Saving note:", content)
+    }
+
+    const deleteNote = () => {
+        // Implement the logic to delete the note
+        console.log("Deleting note")
+    }
   return (
     <div className="flex h-screen">
         <Sidebar />
@@ -15,15 +24,16 @@ const Note = () => {
             <div className="note-container flex items-center gap-4 ">
                 <NoteContentContainer value={content} onChange={setContent} />
                 <NoteVueContainer content={content} />
-                        <div>
-            <button>Save Note</button>
-            <button>Delete Note</button>
-        </div> 
+                <div className="flex flex-col gap-2">
+                    <Button variant="default" onClick={saveNote}>
+                        Save Note
+                    </Button>
+                    <Button variant="destructive" onClick={deleteNote}>
+                        Delete Note
+                    </Button>
+                </div> 
             </div>
         </div>
-
-    
-
     </div>
   )
 }

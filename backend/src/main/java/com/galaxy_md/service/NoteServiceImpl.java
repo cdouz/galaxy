@@ -1,5 +1,6 @@
 package com.galaxy_md.service;
 
+import com.galaxy_md.dto.NoteCreateDto;
 import com.galaxy_md.dto.NoteResponseDto;
 import com.galaxy_md.mapper.NoteMapper;
 import com.galaxy_md.repository.NoteRepository;
@@ -21,4 +22,6 @@ public class NoteServiceImpl implements NoteService {
                 .map(NoteMapper::NoteToNoteResponseDto)
                 .toList();
     }
+
+    public NoteCreateDto create(NoteResponseDto dto, String username) {}
 }

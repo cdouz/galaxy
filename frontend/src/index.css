@@ -72,7 +72,12 @@
   font-family: "Jacques Francois", serif;
   font-style: normal;
 }
-
+.italic {
+  font-style: italic;
+}
+.bg-milk{
+    background-color: #FBE4D6;
+}
 .text-milk{
     color: #FBE4D6;
 }

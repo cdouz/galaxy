@@ -7,7 +7,8 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "cd ./frontend && npm run dev"
+    "fdev": "cd ./frontend && npm run dev",
+    "bdev": "cd backend && ./mvnw spring-boot:run"
   },
   "dependencies": {
     "shadcn": "^4.8.0"

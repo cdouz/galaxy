@@ -25,7 +25,7 @@ const Item = ({ icon, label, to, expanded }: SidebarItem & { expanded: boolean }
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-[var(--secondary)] ${isActive ? "bg-zinc-700 text-white" : "text-zinc-400"}`
+      `flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-[var(--secondary)] ${isActive ? "bg-milk text-black" : "text-zinc-400"}`
     }
   >
     <span className="shrink-0">{icon}</span>

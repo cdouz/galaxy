@@ -29,6 +29,13 @@ public class SecurityConfig {
             "/api/auth/logout"
     };
 
+    // Only register/login are exempt: no CSRF cookie exists yet at that point.
+    // logout DOES modify state (clears the auth cookie), so it stays CSRF-protected.
+    private static final String[] CSRF_EXEMPT_ENDPOINTS = {
+            "/api/auth/register",
+            "/api/auth/login"
+    };
+
     @Value("${app.cors.allowed-origins}")
     private List<String> allowedOrigins;
 
@@ -53,7 +60,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers(PUBLIC_ENDPOINTS)
+                        .ignoringRequestMatchers(CSRF_EXEMPT_ENDPOINTS)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(restAuthenticationEntryPoint))

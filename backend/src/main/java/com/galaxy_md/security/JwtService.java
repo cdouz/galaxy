@@ -14,6 +14,8 @@ import java.util.Date;
 @Service
 public class JwtService {
 
+    public static final String ACCESS_TOKEN_COOKIE = "access_token";
+
     private static final String EMAIL_CLAIM = "email";
 
     private final SecretKey signingKey;

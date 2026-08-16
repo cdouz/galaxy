@@ -26,7 +26,7 @@ class JwtAuthenticationFilterTest {
 
     private static final String SECRET = "test-secret-key-for-jwt-filter-unit-tests-1234567890";
 
-    private final JwtService jwtService = new JwtService(SECRET, 60_000);
+    private final JwtService jwtService = new JwtService(SECRET, 60_000, true);
 
     @Mock
     private UserRepository userRepository;

@@ -12,7 +12,7 @@ class JwtServiceTest {
 
     private static final String SECRET = "test-secret-key-for-jwt-service-unit-tests-1234567890";
 
-    private final JwtService jwtService = new JwtService(SECRET, 60_000);
+    private final JwtService jwtService = new JwtService(SECRET, 60_000, true);
 
     private User aUser() {
         return User.builder()
@@ -39,7 +39,7 @@ class JwtServiceTest {
 
     @Test
     void rejectsATokenSignedWithADifferentSecret() {
-        JwtService otherJwtService = new JwtService("another-secret-key-completely-different-0987654321", 60_000);
+        JwtService otherJwtService = new JwtService("another-secret-key-completely-different-0987654321", 60_000, true);
         String token = otherJwtService.generateToken(aUser());
 
         assertThatThrownBy(() -> jwtService.extractUserId(token))
@@ -48,7 +48,7 @@ class JwtServiceTest {
 
     @Test
     void rejectsAnExpiredToken() {
-        JwtService expiredJwtService = new JwtService(SECRET, -1_000);
+        JwtService expiredJwtService = new JwtService(SECRET, -1_000, true);
         String token = expiredJwtService.generateToken(aUser());
 
         assertThatThrownBy(() -> jwtService.extractUserId(token))

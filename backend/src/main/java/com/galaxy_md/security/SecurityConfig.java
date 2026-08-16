@@ -46,7 +46,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             CorsConfigurationSource corsConfigurationSource,
-            JwtAuthenticationFilter jwtAuthenticationFilter
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            RestAuthenticationEntryPoint restAuthenticationEntryPoint
     ) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
@@ -55,6 +56,7 @@ public class SecurityConfig {
                         .ignoringRequestMatchers(PUBLIC_ENDPOINTS)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(restAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()

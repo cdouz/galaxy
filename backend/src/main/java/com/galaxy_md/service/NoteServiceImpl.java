@@ -23,5 +23,8 @@ public class NoteServiceImpl implements NoteService {
                 .toList();
     }
 
-    public NoteCreateDto create(NoteResponseDto dto, String username) {}
+    @Override
+    public NoteCreateDto create(NoteCreateDto dto, String username) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
 }

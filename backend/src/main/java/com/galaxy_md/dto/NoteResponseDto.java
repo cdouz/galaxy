@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class NoteResponseDto {
-    private String contenu;
-    private String titre;
+    private String content;
+    private String title;
 }

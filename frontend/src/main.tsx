@@ -7,6 +7,7 @@ import Note from './pages/note/Note.js'
 import NoteView from './pages/note/NoteView.js'
 import About from './pages/about/About.js'
 import Dashboard from './pages/dashboard/Dashboard'
+import Login from './pages/auth/Login'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />

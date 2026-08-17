@@ -7,6 +7,7 @@ import Note from './pages/note/Note.js'
 import NoteView from './pages/note/NoteView.js'
 import About from './pages/about/About.js'
 import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,9 +15,12 @@ createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/note" element={<Note />} />
-          <Route path="/note/view" element={<NoteView />} />
           <Route path="/about" element={<About />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/note" element={<Note />} />
+            <Route path="/note/view" element={<NoteView />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

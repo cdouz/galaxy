@@ -9,8 +9,11 @@ public class NoteMapper {
     public static NoteResponseDto NoteToNoteResponseDto(Note note) {
         return NoteResponseDto
                 .builder()
+                .id(note.getId())
                 .content(note.getContent())
                 .title(note.getTitle())
+                .createdAt(note.getCreatedAt())
+                .updatedAt(note.getUpdatedAt())
                 .build();
     }
 }

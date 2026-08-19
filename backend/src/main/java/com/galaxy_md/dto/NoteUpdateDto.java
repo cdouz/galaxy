@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NoteCreateDto {
+public class NoteUpdateDto {
     private String content;
 
     @NotBlank

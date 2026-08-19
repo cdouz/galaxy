@@ -5,6 +5,7 @@ import com.galaxy_md.dto.RegisterRequest;
 import com.galaxy_md.entity.User;
 import com.galaxy_md.exception.EmailAlreadyUsedException;
 import com.galaxy_md.exception.InvalidCredentialsException;
+import com.galaxy_md.exception.UserNotFoundException;
 import com.galaxy_md.exception.UsernameAlreadyUsedException;
 import com.galaxy_md.repository.UserRepository;
 import com.galaxy_md.security.UserPrincipal;
@@ -52,5 +53,18 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialsException();
         }
         return ((UserPrincipal) authentication.getPrincipal()).getUser();
+    }
+
+    @Override
+    public User updateUsername(Long userId, String newUsername) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (!newUsername.equals(user.getUsername()) && userRepository.existsByUsername(newUsername)) {
+            throw new UsernameAlreadyUsedException(newUsername);
+        }
+
+        user.setUsername(newUsername);
+        return userRepository.save(user);
     }
 }

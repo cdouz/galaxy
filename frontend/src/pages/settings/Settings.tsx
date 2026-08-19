@@ -4,10 +4,19 @@ import Sidebar from "@/components/Sidebar/Sidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/hooks/useAuth"
+import { useTheme } from "@/hooks/useTheme"
 import { ApiError } from "@/lib/api"
+import type { Theme } from "@/context/theme-context"
+
+const THEME_OPTIONS: { value: Theme; label: string }[] = [
+  { value: "galaxy", label: "Galaxy" },
+  { value: "dark", label: "Dark" },
+  { value: "light", label: "Light" },
+]
 
 const Settings = () => {
   const { user, updateUsername, deleteAccount } = useAuth()
+  const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
 
   const [username, setUsername] = useState(user?.username ?? "")
@@ -73,6 +82,22 @@ const Settings = () => {
               {isSavingUsername ? "Saving..." : "Save"}
             </Button>
           </form>
+        </section>
+
+        <section className="flex flex-col gap-4 max-w-sm">
+          <h2 className="text-lg font-semibold text-milk">Theme</h2>
+          <div className="flex gap-2">
+            {THEME_OPTIONS.map((option) => (
+              <Button
+                key={option.value}
+                type="button"
+                variant={theme === option.value ? "default" : "outline"}
+                onClick={() => setTheme(option.value)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
         </section>
 
         <section className="flex flex-col gap-4 max-w-sm">

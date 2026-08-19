@@ -35,8 +35,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(await authApi.updateUsername(username))
   }
 
+  const deleteAccount = async (password: string) => {
+    try {
+      await authApi.deleteAccount(password)
+    } finally {
+      setUser(null)
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, updateUsername }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, updateUsername, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   )

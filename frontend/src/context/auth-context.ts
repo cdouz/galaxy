@@ -8,6 +8,7 @@ export type AuthContextValue = {
   register: (payload: RegisterPayload) => Promise<void>
   logout: () => Promise<void>
   updateUsername: (username: string) => Promise<void>
+  deleteAccount: (password: string) => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(undefined)

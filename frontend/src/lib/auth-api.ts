@@ -36,3 +36,7 @@ export function me(): Promise<User> {
 export function updateUsername(username: string): Promise<User> {
   return apiFetch<User>("/api/auth/username", { method: "PATCH", body: { username } })
 }
+
+export function deleteAccount(password: string): Promise<void> {
+  return apiFetch<void>("/api/auth/me", { method: "DELETE", body: { password } })
+}

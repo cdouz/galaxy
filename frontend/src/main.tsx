@@ -11,27 +11,30 @@ import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import Settings from './pages/settings/Settings'
 import { AuthProvider } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
 import ProtectedRoute from './components/ProtectedRoute'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+      <ThemeProvider>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/note/new" element={<Note />} />
-            <Route path="/note/:id" element={<Note />} />
-            <Route path="/note/:id/view" element={<NoteView />} />
-            <Route path="/settings" element={<Settings />} />
-          </Route>
-        </Routes>
-      </AuthProvider>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/note/new" element={<Note />} />
+              <Route path="/note/:id" element={<Note />} />
+              <Route path="/note/:id/view" element={<NoteView />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </StrictMode>,
 )

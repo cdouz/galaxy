@@ -42,8 +42,11 @@ const Sidebar = () => {
   const navigate = useNavigate()
 
   const handleLogout = async () => {
-    await logout()
-    navigate("/")
+    try {
+      await logout()
+    } finally {
+      navigate("/")
+    }
   }
 
   return (

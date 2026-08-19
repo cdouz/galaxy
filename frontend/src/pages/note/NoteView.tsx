@@ -28,7 +28,7 @@ const NoteView = () => {
   return (
     <div className="flex flex-col h-screen p-4">
         <div className="flex items-center justify-between mb-4">
-            <h1 className="text-4xl font-bold text-white">{title || "Untitled"}</h1>
+            <h1 className="text-4xl font-bold text-foreground">{title || "Untitled"}</h1>
             <Button variant="outline" onClick={() => navigate(-1)}>
                 Back
             </Button>

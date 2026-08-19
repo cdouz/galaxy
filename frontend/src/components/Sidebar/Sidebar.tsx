@@ -26,7 +26,7 @@ const Item = ({ icon, label, to, expanded }: SidebarItem & { expanded: boolean }
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-[var(--secondary)] ${isActive ? "bg-milk text-black" : "text-zinc-400"}`
+      `flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-[hsl(var(--secondary))] ${isActive ? "bg-milk text-[var(--milk-foreground)]" : "text-muted-foreground"}`
     }
   >
     <span className="shrink-0">{icon}</span>
@@ -67,7 +67,7 @@ const Sidebar = () => {
         {user && (
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-[var(--secondary)] text-zinc-400"
+            className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-[hsl(var(--secondary))] text-muted-foreground"
           >
             <span className="shrink-0"><LogOut size={18} /></span>
             <span className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>

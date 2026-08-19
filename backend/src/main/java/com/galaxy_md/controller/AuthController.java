@@ -1,8 +1,10 @@
 package com.galaxy_md.controller;
 
 import com.galaxy_md.dto.AuthResponse;
+import com.galaxy_md.dto.DeleteAccountRequest;
 import com.galaxy_md.dto.LoginRequest;
 import com.galaxy_md.dto.RegisterRequest;
+import com.galaxy_md.dto.UpdateUsernameRequest;
 import com.galaxy_md.entity.User;
 import com.galaxy_md.mapper.AuthMapper;
 import com.galaxy_md.security.JwtService;
@@ -47,5 +49,21 @@ public class AuthController {
     @GetMapping("/me")
     public AuthResponse me(@AuthenticationPrincipal UserPrincipal principal) {
         return AuthMapper.toAuthResponse(principal.getUser());
+    }
+
+    @PatchMapping("/username")
+    public AuthResponse updateUsername(@Valid @RequestBody UpdateUsernameRequest request,
+                                        @AuthenticationPrincipal UserPrincipal principal) {
+        User user = authService.updateUsername(principal.getId(), request.getUsername());
+        return AuthMapper.toAuthResponse(user);
+    }
+
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccount(@Valid @RequestBody DeleteAccountRequest request,
+                               @AuthenticationPrincipal UserPrincipal principal,
+                               HttpServletResponse response) {
+        authService.deleteAccount(principal.getId(), request.getPassword());
+        response.addHeader(HttpHeaders.SET_COOKIE, jwtService.buildLogoutCookie().toString());
     }
 }

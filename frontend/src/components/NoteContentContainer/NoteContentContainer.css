@@ -2,6 +2,7 @@
     border: 1px solid black;
     border-radius: 10px;
     background-color:var(--milk);
+    color:var(--milk-foreground);
     height: 80%;
     width: 40%;
 }

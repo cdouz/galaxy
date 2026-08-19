@@ -17,15 +17,15 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
     }
 
-    @ExceptionHandler(InvalidCredentialsException.class)
+    @ExceptionHandler({InvalidCredentialsException.class, InvalidPasswordException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse handleInvalidCredentials(InvalidCredentialsException ex) {
+    public ErrorResponse handleUnauthorized(RuntimeException ex) {
         return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
     }
 
-    @ExceptionHandler(NoteNotFoundException.class)
+    @ExceptionHandler({NoteNotFoundException.class, UserNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNoteNotFound(NoteNotFoundException ex) {
+    public ErrorResponse handleNotFound(RuntimeException ex) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 

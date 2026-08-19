@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -68,6 +69,13 @@ public class SecurityConfig {
                         // cookie value and resends it as-is, so we need the plain handler that
                         // compares against the raw token instead.
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                        // Default is CsrfAuthenticationStrategy, which deletes and reissues the CSRF
+                        // cookie every time SecurityContextHolder gets a new Authentication. JwtAuthenticationFilter
+                        // re-authenticates from the JWT cookie on every request (stateless, no session), so that
+                        // fired on every single authenticated call, constantly invalidating the token the SPA had
+                        // just read. It exists to defend session-based logins against fixation; there's no session
+                        // here for it to fixate, so it's a no-op.
+                        .sessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy())
                         .ignoringRequestMatchers(CSRF_EXEMPT_ENDPOINTS)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

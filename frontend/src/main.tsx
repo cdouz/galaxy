@@ -24,8 +24,9 @@ createRoot(document.getElementById('root')!).render(
 
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/note" element={<Note />} />
-            <Route path="/note/view" element={<NoteView />} />
+            <Route path="/note/new" element={<Note />} />
+            <Route path="/note/:id" element={<Note />} />
+            <Route path="/note/:id/view" element={<NoteView />} />
           </Route>
         </Routes>
       </AuthProvider>

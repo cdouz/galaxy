@@ -14,7 +14,7 @@ const topItems: SidebarItem[] = [
   { icon: <LayoutDashboard size={18} />, label: "Dashboard", to: "/dashboard" },
   { icon: <Waypoints size={18} />, label: "My Galaxy", to: "/graph" },
   { icon: <Search size={18} />, label: "Search", to: "/search" },
-  { icon: <Plus size={18} />, label: "New note", to: "/notes/new" },
+  { icon: <Plus size={18} />, label: "New note", to: "/note/new" },
 ]
 
 const bottomItems: SidebarItem[] = [

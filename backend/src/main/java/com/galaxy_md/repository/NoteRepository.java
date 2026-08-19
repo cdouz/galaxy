@@ -11,4 +11,6 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
     Optional<Note> findByIdAndUserId(Long id, Long userId);
     boolean existsByUserIdAndTitle(Long userId, String title);
     boolean existsByUserIdAndTitleAndIdNot(Long userId, String title, Long id);
+    long countByUserId(Long userId);
+    List<Note> findTop5ByUserIdOrderByUpdatedAtDesc(Long userId);
 }

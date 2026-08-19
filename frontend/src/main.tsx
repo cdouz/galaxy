@@ -7,6 +7,7 @@ import Note from './pages/note/Note.js'
 import NoteView from './pages/note/NoteView.js'
 import About from './pages/about/About.js'
 import Dashboard from './pages/dashboard/Dashboard'
+import Graph from './pages/graph/graph'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import Settings from './pages/settings/Settings'
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')!).render(
 
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/graph" element={<Graph />} />
               <Route path="/note/new" element={<Note />} />
               <Route path="/note/:id" element={<Note />} />
               <Route path="/note/:id/view" element={<NoteView />} />

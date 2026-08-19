@@ -1,16 +1,29 @@
-import { useLocation, useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import NoteVueContainer from "../../components/NoteVueContainer/NoteVueContainer"
 import { Button } from "@/components/ui/button"
-
-type LocationState = {
-  title?: string
-  content?: string
-}
+import { ApiError } from "@/lib/api"
+import { getNote } from "@/lib/note-api"
 
 const NoteView = () => {
   const navigate = useNavigate()
-  const { state } = useLocation()
-  const { title = "", content = "" } = (state as LocationState) ?? {}
+  const { id } = useParams<{ id: string }>()
+
+  const [title, setTitle] = useState("")
+  const [content, setContent] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!id) return
+    getNote(Number(id))
+      .then((note) => {
+        setTitle(note.title)
+        setContent(note.content)
+      })
+      .catch((err) => setError(err instanceof ApiError ? err.message : "Failed to load note"))
+      .finally(() => setIsLoading(false))
+  }, [id])
 
   return (
     <div className="flex flex-col h-screen p-4">
@@ -20,7 +33,9 @@ const NoteView = () => {
                 Back
             </Button>
         </div>
-        <NoteVueContainer content={content} />
+        {isLoading && <p className="text-muted-foreground">Loading note...</p>}
+        {error && <p className="text-destructive">{error}</p>}
+        {!isLoading && !error && <NoteVueContainer content={content} />}
     </div>
   )
 }

@@ -77,7 +77,7 @@ const Note = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 disabled={isLoading}
-                className="bg-transparent border-none text-4xl font-bold text-white placeholder:text-gray-500 focus:outline-none mb-4"
+                className="bg-transparent border-none text-4xl font-bold text-foreground placeholder:text-muted-foreground focus:outline-none mb-4"
             />
             {error && <p className="text-destructive mb-4">{error}</p>}
             <div className="note-container flex items-center gap-4 ">

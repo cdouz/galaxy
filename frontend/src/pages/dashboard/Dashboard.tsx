@@ -39,7 +39,7 @@ const Dashboard = () => {
               <li key={note.id}>
                 <Link
                   to={`/note/${note.id}`}
-                  className="block rounded-lg px-4 py-3 hover:bg-[hsl(var(--secondary))] text-white"
+                  className="block rounded-lg px-4 py-3 hover:bg-[hsl(var(--secondary))] text-foreground"
                 >
                   {note.title}
                 </Link>

@@ -7,7 +7,7 @@ type Props = {
 
 const NoteContentContainer = ({ value, onChange }: Props) => {
   return (
-      <div className="ncc border-r border-zinc-700">
+      <div className="ncc border-r border-border">
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}

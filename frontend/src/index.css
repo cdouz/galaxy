@@ -28,6 +28,7 @@
     --input: 239 40% 30%;
     --ring: 239 70% 45%;
     --milk: #FBE4D6;
+    --milk-foreground: #020218;
     --black: #020218;
   }
 
@@ -52,6 +53,7 @@
     --input: 0 0% 16%;
     --ring: 0 0% 84%;
     --milk: #F5F5F5;
+    --milk-foreground: #0a0a0a;
     --black: #000000;
   }
 
@@ -76,6 +78,7 @@
     --input: 0 0% 90%;
     --ring: 0 0% 9%;
     --milk: #1a1a1a;
+    --milk-foreground: #f5f5f5;
     --black: #1a1a1a;
   }
 

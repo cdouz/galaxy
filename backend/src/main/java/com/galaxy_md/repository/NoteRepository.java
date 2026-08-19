@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NoteRepository extends JpaRepository<Note, Long> {
-    Note findByTitle(String title);
     List<Note> findNotesByUserId(Long userId);
+    Optional<Note> findByIdAndUserId(Long id, Long userId);
+    boolean existsByUserIdAndTitle(Long userId, String title);
+    boolean existsByUserIdAndTitleAndIdNot(Long userId, String title, Long id);
 }

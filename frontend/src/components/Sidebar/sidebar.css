@@ -1,4 +1,4 @@
 aside{
-    background-color: var(--primary);
-    border-right: 1px solid var(--secondary);
+    background-color: hsl(var(--primary));
+    border-right: 1px solid hsl(var(--secondary));
 }

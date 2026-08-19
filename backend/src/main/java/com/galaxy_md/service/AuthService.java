@@ -8,4 +8,5 @@ public interface AuthService {
     User register(RegisterRequest request);
     User login(LoginRequest request);
     User updateUsername(Long userId, String newUsername);
+    void deleteAccount(Long userId, String rawPassword);
 }

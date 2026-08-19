@@ -17,9 +17,9 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
     }
 
-    @ExceptionHandler(InvalidCredentialsException.class)
+    @ExceptionHandler({InvalidCredentialsException.class, InvalidPasswordException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse handleInvalidCredentials(InvalidCredentialsException ex) {
+    public ErrorResponse handleUnauthorized(RuntimeException ex) {
         return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
     }
 

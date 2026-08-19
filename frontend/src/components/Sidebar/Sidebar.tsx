@@ -1,6 +1,7 @@
-import { Settings, LayoutDashboard, Plus, Search, Waypoints, Info } from "lucide-react"
+import { Settings, LayoutDashboard, Plus, Search, Waypoints, Info, LogOut } from "lucide-react"
 import { useState } from "react"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
+import { useAuth } from "@/hooks/useAuth"
 import './sidebar.css'
 
 type SidebarItem = {
@@ -37,6 +38,16 @@ const Item = ({ icon, label, to, expanded }: SidebarItem & { expanded: boolean }
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false)
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } finally {
+      navigate("/")
+    }
+  }
 
   return (
     <aside
@@ -53,6 +64,17 @@ const Sidebar = () => {
         {bottomItems.map((item) => (
           <Item key={item.to} {...item} expanded={expanded} />
         ))}
+        {user && (
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-[var(--secondary)] text-zinc-400"
+          >
+            <span className="shrink-0"><LogOut size={18} /></span>
+            <span className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>
+              Logout
+            </span>
+          </button>
+        )}
       </nav>
     </aside>
   )

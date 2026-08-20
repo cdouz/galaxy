@@ -25,6 +25,11 @@ public class NoteController {
         return noteService.getAllNotesFromUser(principal.getId());
     }
 
+    @GetMapping("/recent")
+    public List<NoteResponseDto> getRecentNotes(@AuthenticationPrincipal UserPrincipal principal) {
+        return noteService.getRecentNotes(principal.getId());
+    }
+
     @GetMapping("/{id}")
     public NoteResponseDto getById(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal principal) {
         return noteService.getById(id, principal.getId());

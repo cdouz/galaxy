@@ -89,6 +89,15 @@ class NoteServiceImplTest {
     }
 
     @Test
+    void returnsRecentNotesForTheGivenUser() {
+        when(noteRepository.findTop5ByUserIdOrderByUpdatedAtDesc(1L)).thenReturn(List.of(aNote(2L, 1L, "Second"), aNote(1L, 1L, "First")));
+
+        List<NoteResponseDto> result = noteService.getRecentNotes(1L);
+
+        assertThat(result).extracting(NoteResponseDto::getTitle).containsExactly("Second", "First");
+    }
+
+    @Test
     void returnsANoteOwnedByTheUser() {
         when(noteRepository.findByIdAndUserId(1L, 1L)).thenReturn(Optional.of(aNote(1L, 1L, "First")));
 

@@ -29,6 +29,14 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    public List<NoteResponseDto> getRecentNotes(Long userId) {
+        return noteRepository.findTop5ByUserIdOrderByUpdatedAtDesc(userId)
+                .stream()
+                .map(NoteMapper::NoteToNoteResponseDto)
+                .toList();
+    }
+
+    @Override
     public NoteResponseDto getById(Long id, Long userId) {
         Note note = findOwnedNote(id, userId);
         return NoteMapper.NoteToNoteResponseDto(note);

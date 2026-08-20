@@ -37,7 +37,7 @@ const Dashboard = () => {
               </div>
               <div className="rounded-lg border border-border bg-card text-card-foreground p-4">
                 <p className="text-sm text-muted-foreground">Links</p>
-                <p className="text-sm font-medium text-muted-foreground">Coming soon</p>
+                <p className="text-2xl font-bold">{stats.linkCount}</p>
               </div>
             </div>
 

@@ -1,9 +1,11 @@
 package com.galaxy_md.controller;
 
+import com.galaxy_md.dto.BacklinkResponseDto;
 import com.galaxy_md.dto.NoteCreateDto;
 import com.galaxy_md.dto.NoteResponseDto;
 import com.galaxy_md.dto.NoteUpdateDto;
 import com.galaxy_md.security.UserPrincipal;
+import com.galaxy_md.service.LinkService;
 import com.galaxy_md.service.NoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.List;
 public class NoteController {
 
     private final NoteService noteService;
+    private final LinkService linkService;
 
     @GetMapping
     public List<NoteResponseDto> getAllNotesFromUser(@AuthenticationPrincipal UserPrincipal principal) {
@@ -38,6 +41,12 @@ public class NoteController {
     @GetMapping("/{id}")
     public NoteResponseDto getById(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal principal) {
         return noteService.getById(id, principal.getId());
+    }
+
+    @GetMapping("/{id}/backlinks")
+    public List<BacklinkResponseDto> getBacklinks(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal principal) {
+        noteService.getById(id, principal.getId());
+        return linkService.getBacklinks(id);
     }
 
     @PostMapping

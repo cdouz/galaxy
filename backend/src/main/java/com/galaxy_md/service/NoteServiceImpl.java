@@ -19,6 +19,7 @@ import java.util.List;
 public class NoteServiceImpl implements NoteService {
 
     private final NoteRepository noteRepository;
+    private final LinkService linkService;
 
     @Override
     public List<NoteResponseDto> getAllNotesFromUser(Long userId) {
@@ -68,7 +69,9 @@ public class NoteServiceImpl implements NoteService {
                 .user(user)
                 .build();
 
-        return NoteMapper.NoteToNoteResponseDto(noteRepository.save(note));
+        Note savedNote = noteRepository.save(note);
+        linkService.syncLinks(savedNote);
+        return NoteMapper.NoteToNoteResponseDto(savedNote);
     }
 
     @Override
@@ -82,7 +85,9 @@ public class NoteServiceImpl implements NoteService {
         note.setTitle(dto.getTitle());
         note.setContent(dto.getContent());
 
-        return NoteMapper.NoteToNoteResponseDto(noteRepository.save(note));
+        Note savedNote = noteRepository.save(note);
+        linkService.syncLinks(savedNote);
+        return NoteMapper.NoteToNoteResponseDto(savedNote);
     }
 
     @Override

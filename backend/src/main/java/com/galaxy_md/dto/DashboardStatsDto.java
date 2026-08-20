@@ -9,5 +9,6 @@ import java.util.List;
 @Builder
 public class DashboardStatsDto {
     private long noteCount;
+    private long linkCount;
     private List<NoteResponseDto> recentNotes;
 }

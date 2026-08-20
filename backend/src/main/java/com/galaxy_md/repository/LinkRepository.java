@@ -8,4 +8,5 @@ import java.util.List;
 public interface LinkRepository extends JpaRepository<Link, Long> {
     List<Link> findBySourceNoteId(Long sourceNoteId);
     List<Link> findByTargetNoteId(Long targetNoteId);
+    long countBySourceNote_User_Id(Long userId);
 }

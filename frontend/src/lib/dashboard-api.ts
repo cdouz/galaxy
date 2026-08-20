@@ -3,6 +3,7 @@ import type { Note } from "./note-api"
 
 export type DashboardStats = {
   noteCount: number
+  linkCount: number
   recentNotes: Note[]
 }
 

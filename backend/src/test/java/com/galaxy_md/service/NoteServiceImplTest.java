@@ -172,4 +172,16 @@ class NoteServiceImplTest {
         assertThatThrownBy(() -> noteService.delete(1L, 1L))
                 .isInstanceOf(NoteNotFoundException.class);
     }
+
+    @Test
+    void storesEmptyContentWhenTheRequestOmitsIt() {
+        User user = aUser();
+        NoteCreateDto dto = NoteCreateDto.builder().title("My note").build();
+        when(noteRepository.existsByUserIdAndTitle(1L, "My note")).thenReturn(false);
+        when(noteRepository.save(any(Note.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        NoteResponseDto created = noteService.create(dto, user);
+
+        assertThat(created.getContent()).isEmpty();
+    }
 }

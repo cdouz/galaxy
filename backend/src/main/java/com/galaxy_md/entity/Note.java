@@ -22,7 +22,7 @@ public class Note {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Column(name = "created_at", nullable = false, updatable = false)

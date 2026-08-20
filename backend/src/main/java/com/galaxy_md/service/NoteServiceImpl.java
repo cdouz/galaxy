@@ -71,7 +71,7 @@ public class NoteServiceImpl implements NoteService {
 
         Note note = Note.builder()
                 .title(dto.getTitle())
-                .content(dto.getContent())
+                .content(contentOrEmpty(dto.getContent()))
                 .user(user)
                 .build();
 
@@ -90,7 +90,7 @@ public class NoteServiceImpl implements NoteService {
         }
 
         note.setTitle(dto.getTitle());
-        note.setContent(dto.getContent());
+        note.setContent(contentOrEmpty(dto.getContent()));
 
         Note savedNote = noteRepository.save(note);
         linkService.syncLinks(savedNote);
@@ -102,6 +102,11 @@ public class NoteServiceImpl implements NoteService {
     public void delete(Long id, Long userId) {
         Note note = findOwnedNote(id, userId);
         noteRepository.delete(note);
+    }
+
+    /** The column is NOT NULL: a caller omitting content means an empty note, not a bad request. */
+    private String contentOrEmpty(String content) {
+        return content == null ? "" : content;
     }
 
     private Note findOwnedNote(Long id, Long userId) {

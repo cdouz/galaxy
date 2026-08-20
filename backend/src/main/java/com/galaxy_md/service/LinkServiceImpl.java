@@ -62,8 +62,10 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BacklinkResponseDto> getBacklinks(Long targetNoteId) {
-        return linkRepository.findByTargetNoteId(targetNoteId)
+    public List<BacklinkResponseDto> getBacklinks(Long targetNoteId, Long userId) {
+        // Scoped by owner in the query itself: access control does not depend on the
+        // caller having checked ownership beforehand.
+        return linkRepository.findByTargetNoteIdAndTargetNote_User_Id(targetNoteId, userId)
                 .stream()
                 .map(link -> NoteMapper.NoteToBacklinkResponseDto(link.getSourceNote()))
                 .toList();

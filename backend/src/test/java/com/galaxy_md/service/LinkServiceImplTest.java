@@ -140,10 +140,17 @@ class LinkServiceImplTest {
         Note source = aNote(1L, user, "Source", "See [[Target]]");
         Link link = Link.builder().id(1L).sourceNote(source).targetNote(target).build();
 
-        when(linkRepository.findByTargetNoteId(2L)).thenReturn(List.of(link));
+        when(linkRepository.findByTargetNoteIdAndTargetNote_User_Id(2L, 1L)).thenReturn(List.of(link));
 
-        List<BacklinkResponseDto> result = linkService.getBacklinks(2L);
+        List<BacklinkResponseDto> result = linkService.getBacklinks(2L, 1L);
 
         assertThat(result).extracting(BacklinkResponseDto::getTitle).containsExactly("Source");
+    }
+
+    @Test
+    void returnsNoBacklinksForANoteBelongingToSomeoneElse() {
+        when(linkRepository.findByTargetNoteIdAndTargetNote_User_Id(2L, 99L)).thenReturn(List.of());
+
+        assertThat(linkService.getBacklinks(2L, 99L)).isEmpty();
     }
 }

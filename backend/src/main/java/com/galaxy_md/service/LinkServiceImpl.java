@@ -9,6 +9,7 @@ import com.galaxy_md.repository.NoteRepository;
 import com.galaxy_md.util.WikiLinkParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class LinkServiceImpl implements LinkService {
     private final NoteRepository noteRepository;
 
     @Override
+    @Transactional
     public void syncLinks(Note sourceNote) {
         Set<String> titles = WikiLinkParser.extractTitles(sourceNote.getContent());
 
@@ -59,6 +61,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BacklinkResponseDto> getBacklinks(Long targetNoteId) {
         return linkRepository.findByTargetNoteId(targetNoteId)
                 .stream()

@@ -1,5 +1,6 @@
 package com.galaxy_md.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(RuntimeException ex) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+    }
+
+    /**
+     * Last line of defence behind bean validation: uniqueness races (two identical
+     * registrations landing at once) and any column constraint we failed to mirror
+     * in a DTO would otherwise surface as a 500. The exception message carries
+     * constraint and SQL fragments, so it is deliberately not echoed back.
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), "This change conflicts with existing data");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

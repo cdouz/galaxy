@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "fdev": "cd ./frontend && npm run dev",
-    "bdev": "cd backend && ./mvnw spring-boot:run"
+    "bdev": "cd backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev"
   },
   "dependencies": {
     "shadcn": "^4.8.0"

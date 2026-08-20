@@ -38,12 +38,30 @@ export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): 
   })
 
   const text = await response.text()
-  const data = text ? JSON.parse(text) : undefined
+  // Not every response is ours: a container error page, a proxy timeout or a
+  // Tomcat stack trace all come back as HTML. Parsing those must not escape as
+  // a SyntaxError, because every caller branches on `instanceof ApiError`.
+  const data = parseJson(text)
 
   if (!response.ok) {
     const message = (data as { message?: string } | undefined)?.message ?? response.statusText
     throw new ApiError(response.status, message)
   }
 
+  if (text && data === undefined) {
+    throw new ApiError(response.status, "Unexpected response from the server")
+  }
+
   return data as T
+}
+
+function parseJson(text: string): unknown {
+  if (!text) {
+    return undefined
+  }
+  try {
+    return JSON.parse(text)
+  } catch {
+    return undefined
+  }
 }

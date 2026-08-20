@@ -4,13 +4,12 @@
   "description": "taking note web app",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "fdev": "cd ./frontend && npm run dev",
     "bdev": "cd backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev"
   },
-  "dependencies": {
+  "devDependencies": {
     "shadcn": "^4.8.0"
   }
 }

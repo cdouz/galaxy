@@ -58,6 +58,7 @@ public class SecurityConfig {
             CorsConfigurationSource corsConfigurationSource,
             JwtAuthenticationFilter jwtAuthenticationFilter,
             CsrfCookieFilter csrfCookieFilter,
+            LoginRateLimitFilter loginRateLimitFilter,
             RestAuthenticationEntryPoint restAuthenticationEntryPoint
     ) throws Exception {
         http
@@ -85,7 +86,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterAfter(csrfCookieFilter, BasicAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loginRateLimitFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

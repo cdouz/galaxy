@@ -15,6 +15,7 @@ import Settings from './pages/settings/Settings'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import NotFound from './pages/not-found/NotFound'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -36,6 +37,8 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/note/:id/view" element={<NoteView />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
       </ThemeProvider>

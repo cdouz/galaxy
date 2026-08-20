@@ -4,8 +4,14 @@ import { useAuth } from "@/hooks/useAuth"
 const ProtectedRoute = () => {
   const { user, isLoading } = useAuth()
 
+  // The session is checked against the server on first load; rendering nothing
+  // meanwhile showed a blank page on every entry to a protected route.
   if (isLoading) {
-    return null
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    )
   }
 
   if (!user) {

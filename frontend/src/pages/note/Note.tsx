@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import NoteContentContainer from "../../components/NoteContentContainer/NoteContentContainer"
-import NoteVueContainer from "../../components/NoteVueContainer/NoteVueContainer"
-import Sidebar from "../../components/Sidebar/Sidebar"
+import NoteContentContainer from "@/components/NoteContentContainer/NoteContentContainer"
+import NoteVueContainer from "@/components/NoteVueContainer/NoteVueContainer"
+import Sidebar from "@/components/Sidebar/Sidebar"
 import './note.css'
 import { Button } from "@/components/ui/button"
 import { ApiError } from "@/lib/api"

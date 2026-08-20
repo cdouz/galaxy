@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import WikiLinkAutocomplete from "../WikiLinkAutocomplete/WikiLinkAutocomplete"
+import WikiLinkAutocomplete from "@/components/WikiLinkAutocomplete/WikiLinkAutocomplete"
 import { useWikiLinkAutocomplete } from "@/hooks/useWikiLinkAutocomplete"
 import { getCaretCoordinates, type CaretCoordinates } from "@/lib/caret-position"
 import type { Note } from "@/lib/note-api"

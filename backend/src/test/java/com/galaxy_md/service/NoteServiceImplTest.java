@@ -31,11 +31,14 @@ class NoteServiceImplTest {
     @Mock
     private NoteRepository noteRepository;
 
+    @Mock
+    private LinkService linkService;
+
     private NoteServiceImpl noteService;
 
     @BeforeEach
     void setUp() {
-        noteService = new NoteServiceImpl(noteRepository);
+        noteService = new NoteServiceImpl(noteRepository, linkService);
     }
 
     private User aUser() {
@@ -65,6 +68,7 @@ class NoteServiceImplTest {
         ArgumentCaptor<Note> captor = ArgumentCaptor.forClass(Note.class);
         verify(noteRepository).save(captor.capture());
         assertThat(captor.getValue().getUser()).isEqualTo(user);
+        verify(linkService).syncLinks(any(Note.class));
     }
 
     @Test
@@ -126,6 +130,7 @@ class NoteServiceImplTest {
 
         assertThat(result.getTitle()).isEqualTo("New title");
         assertThat(result.getContent()).isEqualTo("new content");
+        verify(linkService).syncLinks(any(Note.class));
     }
 
     @Test

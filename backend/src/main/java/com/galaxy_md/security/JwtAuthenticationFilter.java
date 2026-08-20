@@ -49,6 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return Arrays.stream(cookies)
                 .filter(cookie -> JwtService.ACCESS_TOKEN_COOKIE.equals(cookie.getName()))
                 .map(Cookie::getValue)
+                .filter(value -> value != null && !value.isBlank())
                 .findFirst();
     }
 
@@ -56,7 +57,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             Long userId = jwtService.extractUserId(token);
             return userRepository.findById(userId).map(UserPrincipal::new);
-        } catch (JwtException e) {
+        } catch (JwtException | IllegalArgumentException e) {
+            // JwtException covers expired, malformed and badly signed tokens. JJWT throws a
+            // plain IllegalArgumentException for a blank token, and Long.valueOf throws
+            // NumberFormatException on a non-numeric subject; an unusable cookie must leave
+            // the request anonymous, never bubble up as a 500.
             return Optional.empty();
         }
     }

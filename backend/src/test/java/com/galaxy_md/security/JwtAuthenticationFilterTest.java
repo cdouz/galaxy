@@ -2,6 +2,8 @@ package com.galaxy_md.security;
 
 import com.galaxy_md.entity.User;
 import com.galaxy_md.repository.UserRepository;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,6 +104,31 @@ class JwtAuthenticationFilterTest {
         String token = jwtService.generateToken(aUser());
         when(request.getCookies()).thenReturn(new Cookie[]{new Cookie(JwtService.ACCESS_TOKEN_COOKIE, token)});
         when(userRepository.findById(42L)).thenReturn(Optional.empty());
+
+        filter.doFilter(request, response, filterChain);
+
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @Test
+    void doesNotAuthenticateWhenTokenCookieIsBlank() throws Exception {
+        when(request.getCookies()).thenReturn(new Cookie[]{new Cookie(JwtService.ACCESS_TOKEN_COOKIE, "")});
+
+        filter.doFilter(request, response, filterChain);
+
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @Test
+    void doesNotAuthenticateWhenSubjectIsNotAUserId() throws Exception {
+        String token = Jwts.builder()
+                .subject("not-a-number")
+                .expiration(new Date(System.currentTimeMillis() + 60_000))
+                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8)))
+                .compact();
+        when(request.getCookies()).thenReturn(new Cookie[]{new Cookie(JwtService.ACCESS_TOKEN_COOKIE, token)});
 
         filter.doFilter(request, response, filterChain);
 

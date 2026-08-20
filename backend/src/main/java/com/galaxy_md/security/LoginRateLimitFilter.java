@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.time.Duration;
  * request would appear to come from the proxy, so a deployment there must also
  * enable Spring's ForwardedHeaderFilter (server.forward-headers-strategy).
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class LoginRateLimitFilter extends OncePerRequestFilter {
@@ -46,6 +48,7 @@ public class LoginRateLimitFilter extends OncePerRequestFilter {
         String clientKey = request.getRemoteAddr();
         Duration retryAfter = loginAttemptService.retryAfter(clientKey);
         if (!retryAfter.isZero()) {
+            log.warn("Login blocked for {}, {}s left of the lockout", clientKey, retryAfter.toSeconds());
             writeTooManyRequests(response, retryAfter);
             return;
         }

@@ -11,6 +11,7 @@ import com.galaxy_md.exception.UsernameAlreadyUsedException;
 import com.galaxy_md.repository.UserRepository;
 import com.galaxy_md.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -52,6 +54,8 @@ public class AuthServiceImpl implements AuthService {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         } catch (AuthenticationException e) {
+            // Logged without the password and without confirming whether the account exists.
+            log.info("Failed login for {}", request.getEmail());
             throw new InvalidCredentialsException();
         }
         return ((UserPrincipal) authentication.getPrincipal()).getUser();

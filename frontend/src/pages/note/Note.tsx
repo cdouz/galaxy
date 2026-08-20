@@ -9,8 +9,7 @@ import { ApiError } from "@/lib/api"
 import { createNote, deleteNote, getNote, updateNote } from "@/lib/note-api"
 import { useUserNotes } from "@/hooks/useUserNotes"
 
-const Note = () => {
-  const { id } = useParams<{ id: string }>()
+const NoteEditor = ({ id }: { id?: string }) => {
   const navigate = useNavigate()
 
   const [title, setTitle] = useState("")
@@ -100,6 +99,17 @@ const Note = () => {
         </div>
     </div>
   )
+}
+
+/**
+ * `/note/new` and `/note/:id` render the same element, so React would otherwise
+ * keep the previous note's state alive across the transition — and "Save" would
+ * overwrite the note we just navigated away from. Keying on the route param
+ * forces a fresh editor per note.
+ */
+const Note = () => {
+  const { id } = useParams<{ id: string }>()
+  return <NoteEditor key={id ?? "new"} id={id} />
 }
 
 export default Note

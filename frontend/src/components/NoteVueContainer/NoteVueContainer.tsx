@@ -9,13 +9,16 @@ import './NoteVueContainer.css'
 type Props = {
   content: string
   notes: Note[]
+  notesLoading?: boolean
   onError?: (message: string) => void
 }
 
-const NoteVueContainer = ({ content, notes, onError }: Props) => {
+const NoteVueContainer = ({ content, notes, notesLoading, onError }: Props) => {
   const navigate = useNavigate()
 
   const handleWikiLinkClick = async (title: string) => {
+    if (notesLoading) return
+
     const resolved = resolveWikiLinkTitle(title, notes)
     if (resolved) {
       navigate(`/note/${resolved.id}/view`)

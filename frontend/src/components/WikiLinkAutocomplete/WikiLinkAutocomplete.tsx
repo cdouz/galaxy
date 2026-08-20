@@ -14,6 +14,9 @@ const WikiLinkAutocomplete = ({ suggestions, selectedIndex, position, onSelect }
       className="fixed z-50 w-64 max-h-56 overflow-y-auto rounded-md border border-border bg-popover text-popover-foreground shadow-md py-1"
       style={{ top: position.top, left: position.left }}
     >
+      {suggestions.length === 0 && (
+        <li className="px-3 py-1.5 text-sm text-muted-foreground">No notes found</li>
+      )}
       {suggestions.map((note, index) => (
         <li key={note.id}>
           <button

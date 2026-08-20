@@ -19,7 +19,7 @@ const Note = () => {
   const [isLoading, setIsLoading] = useState(Boolean(id))
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { notes } = useUserNotes()
+  const { notes, isLoading: notesLoading } = useUserNotes()
 
   useEffect(() => {
     if (!id) return
@@ -84,7 +84,7 @@ const Note = () => {
             {error && <p className="text-destructive mb-4">{error}</p>}
             <div className="note-container flex items-center gap-4 ">
                 <NoteContentContainer value={content} onChange={setContent} notes={notes} />
-                <NoteVueContainer content={content} notes={notes} onError={setError} />
+                <NoteVueContainer content={content} notes={notes} notesLoading={notesLoading} onError={setError} />
                 <div className="flex flex-col gap-2">
                     <Button variant="default" onClick={handleSave} disabled={isSaving || isLoading || !title.trim()}>
                         {isSaving ? "Saving..." : "Save"}

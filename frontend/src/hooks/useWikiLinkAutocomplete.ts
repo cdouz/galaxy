@@ -30,7 +30,7 @@ export function useWikiLinkAutocomplete(notes: Note[]) {
     return matches.slice(0, MAX_SUGGESTIONS)
   }, [trigger, notes])
 
-  const isOpen = trigger !== null && suggestions.length > 0
+  const isOpen = trigger !== null
 
   const handleSelectionChange = (value: string, cursorPos: number) => {
     setTrigger(findOpenTrigger(value, cursorPos))

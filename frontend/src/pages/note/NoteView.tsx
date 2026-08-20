@@ -17,7 +17,7 @@ const NoteView = () => {
   const [error, setError] = useState<string | null>(null)
   const [backlinks, setBacklinks] = useState<Backlink[]>([])
   const [isLoadingBacklinks, setIsLoadingBacklinks] = useState(true)
-  const { notes } = useUserNotes()
+  const { notes, isLoading: notesLoading } = useUserNotes()
 
   useEffect(() => {
     if (!id) return
@@ -50,7 +50,7 @@ const NoteView = () => {
         {error && <p className="text-destructive">{error}</p>}
         {!isLoading && !error && (
           <>
-            <NoteVueContainer content={content} notes={notes} onError={setError} />
+            <NoteVueContainer content={content} notes={notes} notesLoading={notesLoading} onError={setError} />
             <BacklinksPanel backlinks={backlinks} isLoading={isLoadingBacklinks} />
           </>
         )}

@@ -1,15 +1,70 @@
 import Markdown from "react-markdown"
 import remarkBreaks from "remark-breaks"
+import { useNavigate } from "react-router-dom"
+import { ApiError } from "@/lib/api"
+import { createNote, type Note } from "@/lib/note-api"
+import { resolveWikiLinkTitle, transformWikiLinks, WIKILINK_HREF_PREFIX } from "@/lib/wikilinks"
 import './NoteVueContainer.css'
 
 type Props = {
   content: string
+  notes: Note[]
+  onError?: (message: string) => void
 }
 
-const NoteVueContainer = ({ content }: Props) => {
+const NoteVueContainer = ({ content, notes, onError }: Props) => {
+  const navigate = useNavigate()
+
+  const handleWikiLinkClick = async (title: string) => {
+    const resolved = resolveWikiLinkTitle(title, notes)
+    if (resolved) {
+      navigate(`/note/${resolved.id}/view`)
+      return
+    }
+
+    try {
+      const created = await createNote({ title, content: "" })
+      navigate(`/note/${created.id}`)
+    } catch (err) {
+      onError?.(err instanceof ApiError ? err.message : "Failed to create note")
+    }
+  }
+
   return (
     <div className="nvc p-6 overflow-y-auto prose prose-invert max-w-none">
-      <Markdown remarkPlugins={[remarkBreaks]}>{content}</Markdown>
+      <Markdown
+        remarkPlugins={[remarkBreaks]}
+        components={{
+          a: ({ href, children, ...props }) => {
+            if (!href?.startsWith(WIKILINK_HREF_PREFIX)) {
+              return (
+                <a {...props} href={href}>
+                  {children}
+                </a>
+              )
+            }
+
+            const title = decodeURIComponent(href.slice(WIKILINK_HREF_PREFIX.length))
+            const isResolved = Boolean(resolveWikiLinkTitle(title, notes))
+
+            return (
+              <a
+                {...props}
+                href={href}
+                className={isResolved ? "wikilink" : "wikilink wikilink-broken"}
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleWikiLinkClick(title)
+                }}
+              >
+                {children}
+              </a>
+            )
+          },
+        }}
+      >
+        {transformWikiLinks(content)}
+      </Markdown>
     </div>
   )
 }

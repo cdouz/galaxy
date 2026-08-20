@@ -4,6 +4,7 @@ import NoteVueContainer from "../../components/NoteVueContainer/NoteVueContainer
 import { Button } from "@/components/ui/button"
 import { ApiError } from "@/lib/api"
 import { getNote } from "@/lib/note-api"
+import { useUserNotes } from "@/hooks/useUserNotes"
 
 const NoteView = () => {
   const navigate = useNavigate()
@@ -13,6 +14,7 @@ const NoteView = () => {
   const [content, setContent] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { notes } = useUserNotes()
 
   useEffect(() => {
     if (!id) return
@@ -35,7 +37,7 @@ const NoteView = () => {
         </div>
         {isLoading && <p className="text-muted-foreground">Loading note...</p>}
         {error && <p className="text-destructive">{error}</p>}
-        {!isLoading && !error && <NoteVueContainer content={content} />}
+        {!isLoading && !error && <NoteVueContainer content={content} notes={notes} onError={setError} />}
     </div>
   )
 }

@@ -5,3 +5,22 @@
     height: 80%;
     width: 40%;
 }
+
+.nvc .wikilink {
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--milk);
+    background-color: hsl(var(--secondary));
+    border-radius: 4px;
+    padding: 0 0.2em;
+}
+
+.nvc .wikilink:hover {
+    text-decoration: underline;
+}
+
+.nvc .wikilink-broken {
+    color: hsl(var(--destructive));
+    border: 1px dashed currentColor;
+    background-color: transparent;
+}

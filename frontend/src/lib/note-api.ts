@@ -6,6 +6,8 @@ export type Note = {
   content: string
   createdAt: string
   updatedAt: string
+  matchedTitle?: boolean
+  matchedContent?: boolean
 }
 
 export type NotePayload = {
@@ -19,6 +21,10 @@ export function listNotes(): Promise<Note[]> {
 
 export function getRecentNotes(): Promise<Note[]> {
   return apiFetch<Note[]>("/api/notes/recent")
+}
+
+export function searchNotes(query: string): Promise<Note[]> {
+  return apiFetch<Note[]>(`/api/notes/search?q=${encodeURIComponent(query)}`)
 }
 
 export function getNote(id: number): Promise<Note> {

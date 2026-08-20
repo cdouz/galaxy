@@ -12,6 +12,8 @@ public interface NoteService {
 
     List<NoteResponseDto> getRecentNotes(Long userId);
 
+    List<NoteResponseDto> search(String query, Long userId);
+
     NoteResponseDto getById(Long id, Long userId);
 
     NoteResponseDto create(NoteCreateDto dto, User user);

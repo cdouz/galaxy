@@ -37,6 +37,20 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    public List<NoteResponseDto> search(String query, Long userId) {
+        if (query == null || query.isBlank()) {
+            return List.of();
+        }
+
+        return noteRepository
+                .findByUserIdAndTitleContainingIgnoreCaseOrUserIdAndContentContainingIgnoreCaseOrderByUpdatedAtDesc(
+                        userId, query, userId, query)
+                .stream()
+                .map(note -> NoteMapper.NoteToSearchResultDto(note, query))
+                .toList();
+    }
+
+    @Override
     public NoteResponseDto getById(Long id, Long userId) {
         Note note = findOwnedNote(id, userId);
         return NoteMapper.NoteToNoteResponseDto(note);

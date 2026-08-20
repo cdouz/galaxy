@@ -30,6 +30,11 @@ public class NoteController {
         return noteService.getRecentNotes(principal.getId());
     }
 
+    @GetMapping("/search")
+    public List<NoteResponseDto> search(@RequestParam(name = "q", required = false) String q, @AuthenticationPrincipal UserPrincipal principal) {
+        return noteService.search(q, principal.getId());
+    }
+
     @GetMapping("/{id}")
     public NoteResponseDto getById(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal principal) {
         return noteService.getById(id, principal.getId());

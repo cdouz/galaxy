@@ -13,4 +13,6 @@ public class NoteResponseDto {
     private String title;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean matchedTitle;
+    private boolean matchedContent;
 }

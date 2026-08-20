@@ -20,7 +20,7 @@ public class DashboardServiceImpl implements DashboardService {
         long linkCount = linkRepository.countBySourceNote_User_Id(userId);
         var recentNotes = noteRepository.findTop5ByUserIdOrderByUpdatedAtDesc(userId)
                 .stream()
-                .map(NoteMapper::NoteToNoteResponseDto)
+                .map(NoteMapper::toNoteResponseDto)
                 .toList();
 
         return DashboardStatsDto.builder()

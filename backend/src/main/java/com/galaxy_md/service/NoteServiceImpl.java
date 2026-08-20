@@ -27,7 +27,7 @@ public class NoteServiceImpl implements NoteService {
     public List<NoteResponseDto> getAllNotesFromUser(Long userId) {
         return noteRepository.findNotesByUserId(userId)
                 .stream()
-                .map(NoteMapper::NoteToNoteResponseDto)
+                .map(NoteMapper::toNoteResponseDto)
                 .toList();
     }
 
@@ -36,7 +36,7 @@ public class NoteServiceImpl implements NoteService {
     public List<NoteResponseDto> getRecentNotes(Long userId) {
         return noteRepository.findTop5ByUserIdOrderByUpdatedAtDesc(userId)
                 .stream()
-                .map(NoteMapper::NoteToNoteResponseDto)
+                .map(NoteMapper::toNoteResponseDto)
                 .toList();
     }
 
@@ -51,7 +51,7 @@ public class NoteServiceImpl implements NoteService {
                 .findByUserIdAndTitleContainingIgnoreCaseOrUserIdAndContentContainingIgnoreCaseOrderByUpdatedAtDesc(
                         userId, query, userId, query)
                 .stream()
-                .map(note -> NoteMapper.NoteToSearchResultDto(note, query))
+                .map(note -> NoteMapper.toSearchResultDto(note, query))
                 .toList();
     }
 
@@ -59,7 +59,7 @@ public class NoteServiceImpl implements NoteService {
     @Transactional(readOnly = true)
     public NoteResponseDto getById(Long id, Long userId) {
         Note note = findOwnedNote(id, userId);
-        return NoteMapper.NoteToNoteResponseDto(note);
+        return NoteMapper.toNoteResponseDto(note);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class NoteServiceImpl implements NoteService {
 
         Note savedNote = noteRepository.save(note);
         linkService.syncLinks(savedNote);
-        return NoteMapper.NoteToNoteResponseDto(savedNote);
+        return NoteMapper.toNoteResponseDto(savedNote);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class NoteServiceImpl implements NoteService {
 
         Note savedNote = noteRepository.save(note);
         linkService.syncLinks(savedNote);
-        return NoteMapper.NoteToNoteResponseDto(savedNote);
+        return NoteMapper.toNoteResponseDto(savedNote);
     }
 
     @Override

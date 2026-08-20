@@ -67,7 +67,7 @@ public class LinkServiceImpl implements LinkService {
         // caller having checked ownership beforehand.
         return linkRepository.findByTargetNoteIdAndTargetNote_User_Id(targetNoteId, userId)
                 .stream()
-                .map(link -> NoteMapper.NoteToBacklinkResponseDto(link.getSourceNote()))
+                .map(link -> NoteMapper.toBacklinkResponseDto(link.getSourceNote()))
                 .toList();
     }
 }

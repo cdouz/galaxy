@@ -10,6 +10,8 @@ import java.util.List;
 public interface NoteService {
     List<NoteResponseDto> getAllNotesFromUser(Long userId);
 
+    List<NoteResponseDto> getRecentNotes(Long userId);
+
     NoteResponseDto getById(Long id, Long userId);
 
     NoteResponseDto create(NoteCreateDto dto, User user);

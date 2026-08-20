@@ -17,6 +17,10 @@ export function listNotes(): Promise<Note[]> {
   return apiFetch<Note[]>("/api/notes")
 }
 
+export function getRecentNotes(): Promise<Note[]> {
+  return apiFetch<Note[]>("/api/notes/recent")
+}
+
 export function getNote(id: number): Promise<Note> {
   return apiFetch<Note>(`/api/notes/${id}`)
 }

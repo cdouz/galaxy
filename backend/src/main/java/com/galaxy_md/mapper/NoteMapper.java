@@ -1,5 +1,6 @@
 package com.galaxy_md.mapper;
 
+import com.galaxy_md.dto.BacklinkResponseDto;
 import com.galaxy_md.dto.NoteResponseDto;
 import com.galaxy_md.entity.Note;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,15 @@ public class NoteMapper {
                 .updatedAt(note.getUpdatedAt())
                 .matchedTitle(matchedTitle)
                 .matchedContent(matchedContent)
+                .build();
+    }
+
+    public static BacklinkResponseDto NoteToBacklinkResponseDto(Note note) {
+        return BacklinkResponseDto
+                .builder()
+                .id(note.getId())
+                .title(note.getTitle())
+                .updatedAt(note.getUpdatedAt())
                 .build();
     }
 }

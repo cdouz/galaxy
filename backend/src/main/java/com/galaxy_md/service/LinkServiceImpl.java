@@ -1,7 +1,9 @@
 package com.galaxy_md.service;
 
+import com.galaxy_md.dto.BacklinkResponseDto;
 import com.galaxy_md.entity.Link;
 import com.galaxy_md.entity.Note;
+import com.galaxy_md.mapper.NoteMapper;
 import com.galaxy_md.repository.LinkRepository;
 import com.galaxy_md.repository.NoteRepository;
 import com.galaxy_md.util.WikiLinkParser;
@@ -54,5 +56,13 @@ public class LinkServiceImpl implements LinkService {
         if (!linksToAdd.isEmpty()) {
             linkRepository.saveAll(linksToAdd);
         }
+    }
+
+    @Override
+    public List<BacklinkResponseDto> getBacklinks(Long targetNoteId) {
+        return linkRepository.findByTargetNoteId(targetNoteId)
+                .stream()
+                .map(link -> NoteMapper.NoteToBacklinkResponseDto(link.getSourceNote()))
+                .toList();
     }
 }

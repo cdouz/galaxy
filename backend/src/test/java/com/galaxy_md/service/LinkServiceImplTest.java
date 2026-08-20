@@ -1,5 +1,6 @@
 package com.galaxy_md.service;
 
+import com.galaxy_md.dto.BacklinkResponseDto;
 import com.galaxy_md.entity.Link;
 import com.galaxy_md.entity.Note;
 import com.galaxy_md.entity.User;
@@ -130,5 +131,19 @@ class LinkServiceImplTest {
         verify(linkRepository).saveAll(captor.capture());
         assertThat(captor.getValue()).hasSize(1);
         assertThat(captor.getValue().get(0).getTargetNote()).isEqualTo(newTarget);
+    }
+
+    @Test
+    void returnsSourceNotesThatLinkToTheGivenTarget() {
+        User user = aUser(1L);
+        Note target = aNote(2L, user, "Target", "");
+        Note source = aNote(1L, user, "Source", "See [[Target]]");
+        Link link = Link.builder().id(1L).sourceNote(source).targetNote(target).build();
+
+        when(linkRepository.findByTargetNoteId(2L)).thenReturn(List.of(link));
+
+        List<BacklinkResponseDto> result = linkService.getBacklinks(2L);
+
+        assertThat(result).extracting(BacklinkResponseDto::getTitle).containsExactly("Source");
     }
 }

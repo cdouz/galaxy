@@ -32,9 +32,12 @@ export function useWikiLinkAutocomplete(notes: Note[]) {
 
   const isOpen = trigger !== null
 
-  const handleSelectionChange = (value: string, cursorPos: number) => {
-    setTrigger(findOpenTrigger(value, cursorPos))
+  /** Returns whether the caret now sits inside an open `[[` trigger. */
+  const handleSelectionChange = (value: string, cursorPos: number): boolean => {
+    const next = findOpenTrigger(value, cursorPos)
+    setTrigger(next)
     setSelectedIndex(0)
+    return next !== null
   }
 
   const close = () => setTrigger(null)

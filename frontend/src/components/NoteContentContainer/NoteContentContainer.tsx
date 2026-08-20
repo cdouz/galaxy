@@ -1,7 +1,7 @@
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import WikiLinkAutocomplete from "../WikiLinkAutocomplete/WikiLinkAutocomplete"
 import { useWikiLinkAutocomplete } from "@/hooks/useWikiLinkAutocomplete"
-import { getCaretCoordinates } from "@/lib/caret-position"
+import { getCaretCoordinates, type CaretCoordinates } from "@/lib/caret-position"
 import type { Note } from "@/lib/note-api"
 import './NoteContentContainer.css'
 
@@ -13,11 +13,16 @@ type Props = {
 
 const NoteContentContainer = ({ value, onChange, notes }: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [caretCoordinates, setCaretCoordinates] = useState<CaretCoordinates | null>(null)
   const { isOpen, suggestions, selectedIndex, handleSelectionChange, moveSelection, commit, close } =
     useWikiLinkAutocomplete(notes)
 
+  // Measuring the caret mounts a throwaway mirror element, so it happens here in
+  // the event that moved the caret -- never while rendering -- and only while the
+  // suggestion list is actually open.
   const syncSelection = (target: HTMLTextAreaElement) => {
-    handleSelectionChange(target.value, target.selectionStart)
+    const opened = handleSelectionChange(target.value, target.selectionStart)
+    setCaretCoordinates(opened ? getCaretCoordinates(target, target.selectionStart) : null)
   }
 
   const handleSelect = (note: Note) => {
@@ -31,6 +36,11 @@ const NoteContentContainer = ({ value, onChange, notes }: Props) => {
       textarea.focus()
       textarea.setSelectionRange(caretIndex, caretIndex)
     })
+  }
+
+  const dismiss = () => {
+    close()
+    setCaretCoordinates(null)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -48,14 +58,9 @@ const NoteContentContainer = ({ value, onChange, notes }: Props) => {
       if (note) handleSelect(note)
     } else if (e.key === "Escape") {
       e.preventDefault()
-      close()
+      dismiss()
     }
   }
-
-  const caretCoordinates =
-    isOpen && textareaRef.current
-      ? getCaretCoordinates(textareaRef.current, textareaRef.current.selectionStart)
-      : null
 
   return (
       <div className="ncc border-r border-border relative">
@@ -71,7 +76,7 @@ const NoteContentContainer = ({ value, onChange, notes }: Props) => {
             if (e.key === "ArrowLeft" || e.key === "ArrowRight") syncSelection(e.currentTarget)
           }}
           onClick={(e) => syncSelection(e.currentTarget)}
-          onBlur={close}
+          onBlur={dismiss}
           className="w-full h-full resize-none bg-transparent p-6 font-mono text-sm outline-none"
           placeholder="Write markdown here..."
         />

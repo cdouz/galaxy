@@ -13,13 +13,16 @@ type Props = {
   onError?: (message: string) => void
   /** Refetches the note list; used to keep link resolution in step with the server. */
   refreshNotes?: () => Promise<Note[]>
+  /** Asked before leaving the page, so an editor can protect an unsaved draft. */
+  confirmNavigation?: () => boolean
 }
 
-const NoteVueContainer = ({ content, notes, notesLoading, onError, refreshNotes }: Props) => {
+const NoteVueContainer = ({ content, notes, notesLoading, onError, refreshNotes, confirmNavigation }: Props) => {
   const navigate = useNavigate()
 
   const handleWikiLinkClick = async (title: string) => {
     if (notesLoading) return
+    if (confirmNavigation && !confirmNavigation()) return
 
     const resolved = resolveWikiLinkTitle(title, notes)
     if (resolved) {

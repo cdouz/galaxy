@@ -15,6 +15,12 @@ export type NotePayload = {
   content: string
 }
 
+export type Backlink = {
+  id: number
+  title: string
+  updatedAt: string
+}
+
 export function listNotes(): Promise<Note[]> {
   return apiFetch<Note[]>("/api/notes")
 }
@@ -41,4 +47,8 @@ export function updateNote(id: number, payload: NotePayload): Promise<Note> {
 
 export function deleteNote(id: number): Promise<void> {
   return apiFetch<void>(`/api/notes/${id}`, { method: "DELETE" })
+}
+
+export function getBacklinks(id: number): Promise<Backlink[]> {
+  return apiFetch<Backlink[]>(`/api/notes/${id}/backlinks`)
 }

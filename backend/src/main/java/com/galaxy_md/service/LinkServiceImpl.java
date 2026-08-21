@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,12 +28,13 @@ public class LinkServiceImpl implements LinkService {
     public void syncLinks(Note sourceNote) {
         Set<String> titles = WikiLinkParser.extractTitles(sourceNote.getContent());
 
-        Set<Long> resolvedTargetIds = titles.stream()
-                .map(title -> noteRepository.findByUserIdAndTitle(sourceNote.getUser().getId(), title))
-                .flatMap(Optional::stream)
-                .map(Note::getId)
-                .filter(targetId -> !targetId.equals(sourceNote.getId()))
-                .collect(Collectors.toSet());
+        // One query for every title mentioned, rather than one query per title.
+        Map<Long, Note> targetsById = titles.isEmpty()
+                ? Map.of()
+                : noteRepository.findByUserIdAndTitleIn(sourceNote.getUser().getId(), titles).stream()
+                        .filter(target -> !target.getId().equals(sourceNote.getId()))
+                        .collect(Collectors.toMap(Note::getId, target -> target));
+        Set<Long> resolvedTargetIds = targetsById.keySet();
 
         List<Link> existingLinks = linkRepository.findBySourceNoteId(sourceNote.getId());
         Set<Long> existingTargetIds = existingLinks.stream()
@@ -48,7 +49,7 @@ public class LinkServiceImpl implements LinkService {
                 .filter(targetId -> !existingTargetIds.contains(targetId))
                 .map(targetId -> Link.builder()
                         .sourceNote(sourceNote)
-                        .targetNote(noteRepository.getReferenceById(targetId))
+                        .targetNote(targetsById.get(targetId))
                         .build())
                 .toList();
 

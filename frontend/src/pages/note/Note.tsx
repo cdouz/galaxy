@@ -1,25 +1,29 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import NoteContentContainer from "../../components/NoteContentContainer/NoteContentContainer"
-import NoteVueContainer from "../../components/NoteVueContainer/NoteVueContainer"
-import Sidebar from "../../components/Sidebar/Sidebar"
+import NoteContentContainer from "@/components/NoteContentContainer/NoteContentContainer"
+import NoteVueContainer from "@/components/NoteVueContainer/NoteVueContainer"
+import Sidebar from "@/components/Sidebar/Sidebar"
 import './note.css'
 import { Button } from "@/components/ui/button"
 import { ApiError } from "@/lib/api"
 import { createNote, deleteNote, getNote, updateNote } from "@/lib/note-api"
 import { useUserNotes } from "@/hooks/useUserNotes"
 
-const Note = () => {
-  const { id } = useParams<{ id: string }>()
+const EMPTY_DRAFT = { title: "", content: "" }
+
+const NoteEditor = ({ id }: { id?: string }) => {
   const navigate = useNavigate()
 
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
+  const [saved, setSaved] = useState(EMPTY_DRAFT)
   const [noteId, setNoteId] = useState<number | undefined>(id ? Number(id) : undefined)
   const [isLoading, setIsLoading] = useState(Boolean(id))
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { notes, isLoading: notesLoading } = useUserNotes()
+  const { notes, isLoading: notesLoading, refresh: refreshNotes } = useUserNotes()
+
+  const isDirty = title !== saved.title || content !== saved.content
 
   useEffect(() => {
     if (!id) return
@@ -27,11 +31,26 @@ const Note = () => {
       .then((note) => {
         setTitle(note.title)
         setContent(note.content)
+        setSaved({ title: note.title, content: note.content })
         setNoteId(note.id)
       })
       .catch((err) => setError(err instanceof ApiError ? err.message : "Failed to load note"))
       .finally(() => setIsLoading(false))
   }, [id])
+
+  // Closing or reloading the tab with unsaved text hands the draft back to the
+  // browser's own confirmation prompt.
+  useEffect(() => {
+    if (!isDirty) return
+
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault()
+    window.addEventListener("beforeunload", warn)
+    return () => window.removeEventListener("beforeunload", warn)
+  }, [isDirty])
+
+  /** Wikilinks navigate away from the editor; an unsaved draft must not vanish silently. */
+  const confirmNavigation = () =>
+    !isDirty || window.confirm("This note has unsaved changes. Leave without saving?")
 
   const handleSave = async () => {
     setError(null)
@@ -44,6 +63,7 @@ const Note = () => {
         setNoteId(created.id)
         navigate(`/note/${created.id}`, { replace: true })
       }
+      setSaved({ title, content })
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Failed to save note")
     } finally {
@@ -53,6 +73,8 @@ const Note = () => {
 
   const handleDelete = async () => {
     if (!noteId) return
+    if (!window.confirm(`Delete "${title || "this note"}"? This cannot be undone.`)) return
+
     setError(null)
     try {
       await deleteNote(noteId)
@@ -64,6 +86,7 @@ const Note = () => {
 
   const handleView = () => {
     if (!noteId) return
+    if (!confirmNavigation()) return
     navigate(`/note/${noteId}/view`)
   }
 
@@ -84,7 +107,7 @@ const Note = () => {
             {error && <p className="text-destructive mb-4">{error}</p>}
             <div className="note-container flex items-center gap-4 ">
                 <NoteContentContainer value={content} onChange={setContent} notes={notes} />
-                <NoteVueContainer content={content} notes={notes} notesLoading={notesLoading} onError={setError} />
+                <NoteVueContainer content={content} notes={notes} notesLoading={notesLoading} onError={setError} refreshNotes={refreshNotes} confirmNavigation={confirmNavigation} />
                 <div className="flex flex-col gap-2">
                     <Button variant="default" onClick={handleSave} disabled={isSaving || isLoading || !title.trim()}>
                         {isSaving ? "Saving..." : "Save"}
@@ -100,6 +123,17 @@ const Note = () => {
         </div>
     </div>
   )
+}
+
+/**
+ * `/note/new` and `/note/:id` render the same element, so React would otherwise
+ * keep the previous note's state alive across the transition — and "Save" would
+ * overwrite the note we just navigated away from. Keying on the route param
+ * forces a fresh editor per note.
+ */
+const Note = () => {
+  const { id } = useParams<{ id: string }>()
+  return <NoteEditor key={id ?? "new"} id={id} />
 }
 
 export default Note

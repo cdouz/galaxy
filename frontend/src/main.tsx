@@ -1,20 +1,21 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import Landing from './pages/landing/Landing.jsx'
+import Landing from '@/pages/landing/Landing'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Note from './pages/note/Note.js'
-import NoteView from './pages/note/NoteView.js'
-import About from './pages/about/About.js'
-import Dashboard from './pages/dashboard/Dashboard'
-import Search from './pages/search/Search'
-import Graph from './pages/graph/graph'
-import Login from './pages/auth/Login'
-import Register from './pages/auth/Register'
-import Settings from './pages/settings/Settings'
-import { AuthProvider } from './context/AuthContext'
-import { ThemeProvider } from './context/ThemeContext'
-import ProtectedRoute from './components/ProtectedRoute'
+import Note from '@/pages/note/Note'
+import NoteView from '@/pages/note/NoteView'
+import About from '@/pages/about/About'
+import Dashboard from '@/pages/dashboard/Dashboard'
+import Search from '@/pages/search/Search'
+import Graph from '@/pages/graph/graph'
+import Login from '@/pages/auth/Login'
+import Register from '@/pages/auth/Register'
+import Settings from '@/pages/settings/Settings'
+import { AuthProvider } from '@/context/AuthContext'
+import { ThemeProvider } from '@/context/ThemeContext'
+import ProtectedRoute from '@/components/ProtectedRoute'
+import NotFound from '@/pages/not-found/NotFound'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -36,6 +37,8 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/note/:id/view" element={<NoteView />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
       </ThemeProvider>

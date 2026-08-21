@@ -19,4 +19,10 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // shadcn generates these files and re-generates them on `shadcn add`;
+    // they export their variant helpers next to the component by design.
+    files: ['src/components/ui/**'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
 ])

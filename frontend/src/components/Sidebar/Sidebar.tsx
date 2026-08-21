@@ -27,7 +27,7 @@ const Item = ({ icon, label, to, expanded }: SidebarItem & { expanded: boolean }
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-[hsl(var(--secondary))] ${isActive ? "bg-milk text-[var(--milk-foreground)]" : "text-muted-foreground"}`
+      `flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-secondary ${isActive ? "bg-milk text-milk-foreground" : "text-muted-foreground"}`
     }
   >
     <span className="shrink-0">{icon}</span>
@@ -87,7 +87,7 @@ const Sidebar = () => {
                 key={note.id}
                 to={`/note/${note.id}/view`}
                 className={({ isActive }) =>
-                  `truncate rounded-lg px-2 py-2 text-sm transition-colors hover:bg-[hsl(var(--secondary))] ${isActive ? "bg-milk text-[var(--milk-foreground)]" : "text-muted-foreground"}`
+                  `truncate rounded-lg px-2 py-2 text-sm transition-colors hover:bg-secondary ${isActive ? "bg-milk text-milk-foreground" : "text-muted-foreground"}`
                 }
               >
                 {note.title}
@@ -103,7 +103,7 @@ const Sidebar = () => {
         {user && (
           <button
             onClick={handleLogout}
-            className="flex w-full items-center justify-start gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-[hsl(var(--secondary))] text-muted-foreground"
+            className="flex w-full items-center justify-start gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-secondary text-muted-foreground"
           >
             <span className="shrink-0"><LogOut size={18} /></span>
             <span className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>

@@ -14,11 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,9 +50,8 @@ class LinkServiceImplTest {
         Note target = aNote(2L, user, "Target", "");
         Note source = aNote(1L, user, "Source", "See [[Target]]");
 
-        when(noteRepository.findByUserIdAndTitle(1L, "Target")).thenReturn(Optional.of(target));
+        when(noteRepository.findByUserIdAndTitleIn(1L, Set.of("Target"))).thenReturn(List.of(target));
         when(linkRepository.findBySourceNoteId(1L)).thenReturn(List.of());
-        when(noteRepository.getReferenceById(2L)).thenReturn(target);
 
         linkService.syncLinks(source);
 
@@ -70,14 +68,13 @@ class LinkServiceImplTest {
         User user = aUser(1L);
         Note source = aNote(1L, user, "Source", "See [[Missing]]");
 
-        when(noteRepository.findByUserIdAndTitle(1L, "Missing")).thenReturn(Optional.empty());
+        when(noteRepository.findByUserIdAndTitleIn(1L, Set.of("Missing"))).thenReturn(List.of());
         when(linkRepository.findBySourceNoteId(1L)).thenReturn(List.of());
 
         linkService.syncLinks(source);
 
         verify(linkRepository, never()).saveAll(any());
         verify(linkRepository, never()).deleteAll(any());
-        verify(noteRepository, never()).getReferenceById(anyLong());
     }
 
     @Test
@@ -85,7 +82,7 @@ class LinkServiceImplTest {
         User user = aUser(1L);
         Note source = aNote(1L, user, "Source", "See [[Source]]");
 
-        when(noteRepository.findByUserIdAndTitle(1L, "Source")).thenReturn(Optional.of(source));
+        when(noteRepository.findByUserIdAndTitleIn(1L, Set.of("Source"))).thenReturn(List.of(source));
         when(linkRepository.findBySourceNoteId(1L)).thenReturn(List.of());
 
         linkService.syncLinks(source);
@@ -119,10 +116,8 @@ class LinkServiceImplTest {
         Note source = aNote(1L, user, "Source", "See [[Kept]] and [[New]]");
         Link existingLink = Link.builder().id(1L).sourceNote(source).targetNote(keptTarget).build();
 
-        when(noteRepository.findByUserIdAndTitle(1L, "Kept")).thenReturn(Optional.of(keptTarget));
-        when(noteRepository.findByUserIdAndTitle(1L, "New")).thenReturn(Optional.of(newTarget));
+        when(noteRepository.findByUserIdAndTitleIn(1L, Set.of("Kept", "New"))).thenReturn(List.of(keptTarget, newTarget));
         when(linkRepository.findBySourceNoteId(1L)).thenReturn(List.of(existingLink));
-        when(noteRepository.getReferenceById(3L)).thenReturn(newTarget);
 
         linkService.syncLinks(source);
 
@@ -140,10 +135,17 @@ class LinkServiceImplTest {
         Note source = aNote(1L, user, "Source", "See [[Target]]");
         Link link = Link.builder().id(1L).sourceNote(source).targetNote(target).build();
 
-        when(linkRepository.findByTargetNoteId(2L)).thenReturn(List.of(link));
+        when(linkRepository.findByTargetNoteIdAndTargetNote_User_Id(2L, 1L)).thenReturn(List.of(link));
 
-        List<BacklinkResponseDto> result = linkService.getBacklinks(2L);
+        List<BacklinkResponseDto> result = linkService.getBacklinks(2L, 1L);
 
         assertThat(result).extracting(BacklinkResponseDto::getTitle).containsExactly("Source");
+    }
+
+    @Test
+    void returnsNoBacklinksForANoteBelongingToSomeoneElse() {
+        when(linkRepository.findByTargetNoteIdAndTargetNote_User_Id(2L, 99L)).thenReturn(List.of());
+
+        assertThat(linkService.getBacklinks(2L, 99L)).isEmpty();
     }
 }

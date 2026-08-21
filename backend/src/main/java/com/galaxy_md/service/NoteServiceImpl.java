@@ -11,6 +11,7 @@ import com.galaxy_md.mapper.NoteMapper;
 import com.galaxy_md.repository.NoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,22 +23,25 @@ public class NoteServiceImpl implements NoteService {
     private final LinkService linkService;
 
     @Override
+    @Transactional(readOnly = true)
     public List<NoteResponseDto> getAllNotesFromUser(Long userId) {
         return noteRepository.findNotesByUserId(userId)
                 .stream()
-                .map(NoteMapper::NoteToNoteResponseDto)
+                .map(NoteMapper::toNoteResponseDto)
                 .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<NoteResponseDto> getRecentNotes(Long userId) {
         return noteRepository.findTop5ByUserIdOrderByUpdatedAtDesc(userId)
                 .stream()
-                .map(NoteMapper::NoteToNoteResponseDto)
+                .map(NoteMapper::toNoteResponseDto)
                 .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<NoteResponseDto> search(String query, Long userId) {
         if (query == null || query.isBlank()) {
             return List.of();
@@ -47,17 +51,19 @@ public class NoteServiceImpl implements NoteService {
                 .findByUserIdAndTitleContainingIgnoreCaseOrUserIdAndContentContainingIgnoreCaseOrderByUpdatedAtDesc(
                         userId, query, userId, query)
                 .stream()
-                .map(note -> NoteMapper.NoteToSearchResultDto(note, query))
+                .map(note -> NoteMapper.toSearchResultDto(note, query))
                 .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public NoteResponseDto getById(Long id, Long userId) {
         Note note = findOwnedNote(id, userId);
-        return NoteMapper.NoteToNoteResponseDto(note);
+        return NoteMapper.toNoteResponseDto(note);
     }
 
     @Override
+    @Transactional
     public NoteResponseDto create(NoteCreateDto dto, User user) {
         if (noteRepository.existsByUserIdAndTitle(user.getId(), dto.getTitle())) {
             throw new NoteTitleAlreadyExistsException(dto.getTitle());
@@ -65,16 +71,17 @@ public class NoteServiceImpl implements NoteService {
 
         Note note = Note.builder()
                 .title(dto.getTitle())
-                .content(dto.getContent())
+                .content(contentOrEmpty(dto.getContent()))
                 .user(user)
                 .build();
 
         Note savedNote = noteRepository.save(note);
         linkService.syncLinks(savedNote);
-        return NoteMapper.NoteToNoteResponseDto(savedNote);
+        return NoteMapper.toNoteResponseDto(savedNote);
     }
 
     @Override
+    @Transactional
     public NoteResponseDto update(Long id, NoteUpdateDto dto, Long userId) {
         Note note = findOwnedNote(id, userId);
 
@@ -83,17 +90,23 @@ public class NoteServiceImpl implements NoteService {
         }
 
         note.setTitle(dto.getTitle());
-        note.setContent(dto.getContent());
+        note.setContent(contentOrEmpty(dto.getContent()));
 
         Note savedNote = noteRepository.save(note);
         linkService.syncLinks(savedNote);
-        return NoteMapper.NoteToNoteResponseDto(savedNote);
+        return NoteMapper.toNoteResponseDto(savedNote);
     }
 
     @Override
+    @Transactional
     public void delete(Long id, Long userId) {
         Note note = findOwnedNote(id, userId);
         noteRepository.delete(note);
+    }
+
+    /** The column is NOT NULL: a caller omitting content means an empty note, not a bad request. */
+    private String contentOrEmpty(String content) {
+        return content == null ? "" : content;
     }
 
     private Note findOwnedNote(Long id, Long userId) {

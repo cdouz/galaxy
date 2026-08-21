@@ -1,6 +1,8 @@
 package com.galaxy_md.security;
 
+import jakarta.servlet.Filter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,6 +60,7 @@ public class SecurityConfig {
             CorsConfigurationSource corsConfigurationSource,
             JwtAuthenticationFilter jwtAuthenticationFilter,
             CsrfCookieFilter csrfCookieFilter,
+            LoginRateLimitFilter loginRateLimitFilter,
             RestAuthenticationEntryPoint restAuthenticationEntryPoint
     ) throws Exception {
         http
@@ -85,8 +88,37 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterAfter(csrfCookieFilter, BasicAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loginRateLimitFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    /**
+     * Every @Component that is a Filter is also picked up by Boot and registered in
+     * the plain servlet chain, on top of the security chain we add it to here.
+     * OncePerRequestFilter keeps it from running twice, but the second registration
+     * serves no purpose and would apply the filter outside the security chain.
+     */
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilterRegistration(
+            JwtAuthenticationFilter filter) {
+        return unregistered(filter);
+    }
+
+    @Bean
+    public FilterRegistrationBean<CsrfCookieFilter> csrfCookieFilterRegistration(CsrfCookieFilter filter) {
+        return unregistered(filter);
+    }
+
+    @Bean
+    public FilterRegistrationBean<LoginRateLimitFilter> loginRateLimitFilterRegistration(LoginRateLimitFilter filter) {
+        return unregistered(filter);
+    }
+
+    private <T extends Filter> FilterRegistrationBean<T> unregistered(T filter) {
+        FilterRegistrationBean<T> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
     }
 
     @Bean

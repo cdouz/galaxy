@@ -28,6 +28,11 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    /** Incremented on logout: tokens carrying an older value stop being accepted. */
+    @Builder.Default
+    @Column(name = "token_version", nullable = false)
+    private Long tokenVersion = 0L;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

@@ -25,7 +25,7 @@ const BacklinksPanel = ({ backlinks, isLoading }: Props) => {
             <li key={backlink.id}>
               <Link
                 to={`/note/${backlink.id}/view`}
-                className="block rounded-lg px-3 py-2 hover:bg-[hsl(var(--secondary))] text-foreground text-sm truncate"
+                className="block rounded-lg px-3 py-2 hover:bg-secondary text-foreground text-sm truncate"
               >
                 {backlink.title}
               </Link>

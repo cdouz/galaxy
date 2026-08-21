@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import NoteVueContainer from "../../components/NoteVueContainer/NoteVueContainer"
-import BacklinksPanel from "../../components/BacklinksPanel/BacklinksPanel"
+import { Link, useParams } from "react-router-dom"
+import NoteVueContainer from "@/components/NoteVueContainer/NoteVueContainer"
+import BacklinksPanel from "@/components/BacklinksPanel/BacklinksPanel"
 import { Button } from "@/components/ui/button"
 import { ApiError } from "@/lib/api"
 import { getBacklinks, getNote, type Backlink } from "@/lib/note-api"
 import { useUserNotes } from "@/hooks/useUserNotes"
 
 const NoteView = () => {
-  const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
 
   const [title, setTitle] = useState("")
@@ -17,7 +16,7 @@ const NoteView = () => {
   const [error, setError] = useState<string | null>(null)
   const [backlinks, setBacklinks] = useState<Backlink[]>([])
   const [isLoadingBacklinks, setIsLoadingBacklinks] = useState(true)
-  const { notes, isLoading: notesLoading } = useUserNotes()
+  const { notes, isLoading: notesLoading, refresh: refreshNotes } = useUserNotes()
 
   useEffect(() => {
     if (!id) return
@@ -40,17 +39,24 @@ const NoteView = () => {
 
   return (
     <div className="flex flex-col h-screen p-4">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between gap-4 mb-4">
             <h1 className="text-4xl font-bold text-foreground">{title || "Untitled"}</h1>
-            <Button variant="outline" onClick={() => navigate(-1)}>
-                Back
-            </Button>
+            <div className="flex items-center gap-2 shrink-0">
+                <Button variant="outline" asChild>
+                    <Link to="/dashboard">Back to dashboard</Link>
+                </Button>
+                {id && !error && (
+                    <Button asChild>
+                        <Link to={`/note/${id}`}>Edit</Link>
+                    </Button>
+                )}
+            </div>
         </div>
         {isLoading && <p className="text-muted-foreground">Loading note...</p>}
         {error && <p className="text-destructive">{error}</p>}
         {!isLoading && !error && (
           <>
-            <NoteVueContainer content={content} notes={notes} notesLoading={notesLoading} onError={setError} />
+            <NoteVueContainer content={content} notes={notes} notesLoading={notesLoading} onError={setError} refreshNotes={refreshNotes} />
             <BacklinksPanel backlinks={backlinks} isLoading={isLoadingBacklinks} />
           </>
         )}

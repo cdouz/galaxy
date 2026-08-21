@@ -8,5 +8,5 @@ import java.util.List;
 public interface LinkService {
     void syncLinks(Note sourceNote);
 
-    List<BacklinkResponseDto> getBacklinks(Long targetNoteId);
+    List<BacklinkResponseDto> getBacklinks(Long targetNoteId, Long userId);
 }

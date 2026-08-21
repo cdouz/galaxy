@@ -104,12 +104,3 @@
   font-family: "Jacques Francois", serif;
   font-style: normal;
 }
-.italic {
-  font-style: italic;
-}
-.bg-milk{
-    background-color: var(--milk);
-}
-.text-milk{
-    color: var(--milk);
-}

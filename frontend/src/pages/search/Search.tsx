@@ -8,42 +8,59 @@ import { ApiError } from "@/lib/api"
 
 const SEARCH_DEBOUNCE_MS = 300
 
+type SearchState = {
+  /** The query these results belong to, so a stale render is recognisable. */
+  query: string
+  results: Note[]
+  error: string | null
+}
+
 const snippet = (content: string, length = 140) =>
   content.length > length ? `${content.slice(0, length)}…` : content
 
 const Search = () => {
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<Note[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [hasSearched, setHasSearched] = useState(false)
+  const [searchState, setSearchState] = useState<SearchState>({ query: "", results: [], error: null })
+
+  const trimmed = query.trim()
+  // Everything shown is derived from the query the results belong to: an empty
+  // box shows nothing, and results are never rendered under a query that did not
+  // produce them. Deriving it here also keeps state out of the render path.
+  const isCurrent = searchState.query === trimmed
+  const isLoading = Boolean(trimmed) && !isCurrent
+  const results = isCurrent ? searchState.results : []
+  const error = isCurrent ? searchState.error : null
+  const hasSearched = Boolean(trimmed) && isCurrent
 
   useEffect(() => {
-    const trimmed = query.trim()
-
     if (!trimmed) {
-      setResults([])
-      setError(null)
-      setHasSearched(false)
       return
     }
 
-    setIsLoading(true)
+    // The debounce only cancels the timer, not a request already in flight: two
+    // keystrokes can leave two calls racing, and the slower, older one would
+    // otherwise land last and overwrite the results the user is waiting for.
+    let ignore = false
     const timeoutId = setTimeout(() => {
       searchNotes(trimmed)
         .then((notes) => {
-          setResults(notes)
-          setError(null)
+          if (!ignore) setSearchState({ query: trimmed, results: notes, error: null })
         })
-        .catch((err) => setError(err instanceof ApiError ? err.message : "Search failed"))
-        .finally(() => {
-          setIsLoading(false)
-          setHasSearched(true)
+        .catch((err) => {
+          if (ignore) return
+          setSearchState({
+            query: trimmed,
+            results: [],
+            error: err instanceof ApiError ? err.message : "Search failed",
+          })
         })
     }, SEARCH_DEBOUNCE_MS)
 
-    return () => clearTimeout(timeoutId)
-  }, [query])
+    return () => {
+      ignore = true
+      clearTimeout(timeoutId)
+    }
+  }, [trimmed])
 
   return (
     <div className="flex h-screen">
@@ -67,7 +84,7 @@ const Search = () => {
         {!error && isLoading && <p className="text-muted-foreground">Searching...</p>}
 
         {!error && !isLoading && hasSearched && results.length === 0 && (
-          <p className="text-muted-foreground">No notes match "{query.trim()}".</p>
+          <p className="text-muted-foreground">No notes match "{trimmed}".</p>
         )}
 
         {!error && !isLoading && results.length > 0 && (
@@ -76,7 +93,7 @@ const Search = () => {
               <li key={note.id}>
                 <Link
                   to={`/note/${note.id}/view`}
-                  className="flex flex-col gap-1 rounded-lg px-4 py-3 hover:bg-[hsl(var(--secondary))] text-foreground"
+                  className="flex flex-col gap-1 rounded-lg px-4 py-3 hover:bg-secondary text-foreground"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-medium truncate">{note.title}</span>
@@ -86,12 +103,12 @@ const Search = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     {note.matchedTitle && (
-                      <span className="text-xs rounded-full px-2 py-0.5 bg-milk text-[var(--milk-foreground)]">
+                      <span className="text-xs rounded-full px-2 py-0.5 bg-milk text-milk-foreground">
                         title
                       </span>
                     )}
                     {note.matchedContent && (
-                      <span className="text-xs rounded-full px-2 py-0.5 bg-[hsl(var(--secondary))] text-secondary-foreground">
+                      <span className="text-xs rounded-full px-2 py-0.5 bg-secondary text-secondary-foreground">
                         content
                       </span>
                     )}

@@ -11,13 +11,18 @@ type Props = {
   notes: Note[]
   notesLoading?: boolean
   onError?: (message: string) => void
+  /** Refetches the note list; used to keep link resolution in step with the server. */
+  refreshNotes?: () => Promise<Note[]>
+  /** Asked before leaving the page, so an editor can protect an unsaved draft. */
+  confirmNavigation?: () => boolean
 }
 
-const NoteVueContainer = ({ content, notes, notesLoading, onError }: Props) => {
+const NoteVueContainer = ({ content, notes, notesLoading, onError, refreshNotes, confirmNavigation }: Props) => {
   const navigate = useNavigate()
 
   const handleWikiLinkClick = async (title: string) => {
     if (notesLoading) return
+    if (confirmNavigation && !confirmNavigation()) return
 
     const resolved = resolveWikiLinkTitle(title, notes)
     if (resolved) {
@@ -27,8 +32,20 @@ const NoteVueContainer = ({ content, notes, notesLoading, onError }: Props) => {
 
     try {
       const created = await createNote({ title, content: "" })
+      void refreshNotes?.()
       navigate(`/note/${created.id}`)
     } catch (err) {
+      // The list is a snapshot taken when the page mounted. A 409 means the note
+      // does exist and only our copy is out of date -- another tab, or a note
+      // created earlier in this session -- so re-resolve against the server
+      // rather than showing "title already exists" for a link that works.
+      if (err instanceof ApiError && err.status === 409 && refreshNotes) {
+        const existing = resolveWikiLinkTitle(title, await refreshNotes())
+        if (existing) {
+          navigate(`/note/${existing.id}/view`)
+          return
+        }
+      }
       onError?.(err instanceof ApiError ? err.message : "Failed to create note")
     }
   }

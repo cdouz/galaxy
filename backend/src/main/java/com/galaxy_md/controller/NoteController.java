@@ -45,8 +45,9 @@ public class NoteController {
 
     @GetMapping("/{id}/backlinks")
     public List<BacklinkResponseDto> getBacklinks(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal principal) {
+        // Resolved first so an unknown or foreign note answers 404 rather than an empty list.
         noteService.getById(id, principal.getId());
-        return linkService.getBacklinks(id);
+        return linkService.getBacklinks(id, principal.getId());
     }
 
     @PostMapping

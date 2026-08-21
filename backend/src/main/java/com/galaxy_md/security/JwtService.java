@@ -19,6 +19,7 @@ public class JwtService {
     public static final String ACCESS_TOKEN_COOKIE = "access_token";
 
     private static final String EMAIL_CLAIM = "email";
+    private static final String TOKEN_VERSION_CLAIM = "tv";
 
     private final SecretKey signingKey;
     private final long expirationMs;
@@ -41,6 +42,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(String.valueOf(user.getId()))
                 .claim(EMAIL_CLAIM, user.getEmail())
+                .claim(TOKEN_VERSION_CLAIM, user.getTokenVersion())
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(signingKey)
@@ -53,6 +55,12 @@ public class JwtService {
 
     public String extractEmail(String token) {
         return parseClaims(token).get(EMAIL_CLAIM, String.class);
+    }
+
+    /** Null for a token issued before this claim existed, which counts as stale. */
+    public Long extractTokenVersion(String token) {
+        Number version = parseClaims(token).get(TOKEN_VERSION_CLAIM, Number.class);
+        return version == null ? null : version.longValue();
     }
 
     private Claims parseClaims(String token) {

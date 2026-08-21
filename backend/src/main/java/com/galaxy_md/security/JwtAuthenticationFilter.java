@@ -56,7 +56,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private Optional<UserPrincipal> authenticate(String token) {
         try {
             Long userId = jwtService.extractUserId(token);
-            return userRepository.findById(userId).map(UserPrincipal::new);
+            Long tokenVersion = jwtService.extractTokenVersion(token);
+            return userRepository.findById(userId)
+                    // Logout bumps the stored version, which strands every token issued before it.
+                    .filter(user -> user.getTokenVersion().equals(tokenVersion))
+                    .map(UserPrincipal::new);
         } catch (JwtException | IllegalArgumentException e) {
             // JwtException covers expired, malformed and badly signed tokens. JJWT throws a
             // plain IllegalArgumentException for a blank token, and Long.valueOf throws

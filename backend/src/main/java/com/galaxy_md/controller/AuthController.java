@@ -42,7 +42,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public void logout(HttpServletResponse response) {
+    public void logout(@AuthenticationPrincipal UserPrincipal principal, HttpServletResponse response) {
+        // Logging out without a valid cookie is not an error: there is simply nothing
+        // left to revoke, and the browser is told to drop the cookie either way.
+        if (principal != null) {
+            authService.logout(principal.getId());
+        }
         response.addHeader(HttpHeaders.SET_COOKIE, jwtService.buildLogoutCookie().toString());
     }
 

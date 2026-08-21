@@ -76,6 +76,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
+    public void logout(Long userId) {
+        // Clearing the cookie only asks the browser to forget the token; this is what
+        // stops the token itself from being accepted again.
+        userRepository.incrementTokenVersion(userId);
+    }
+
+    @Override
+    @Transactional
     public void deleteAccount(Long userId, String rawPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));

@@ -31,6 +31,16 @@ class JwtServiceTest {
     }
 
     @Test
+    void generatesATokenThatCarriesTheTokenVersion() {
+        User user = aUser();
+        user.setTokenVersion(7L);
+
+        String token = jwtService.generateToken(user);
+
+        assertThat(jwtService.extractTokenVersion(token)).isEqualTo(7L);
+    }
+
+    @Test
     void generatesATokenThatContainsTheEmail() {
         String token = jwtService.generateToken(aUser());
 

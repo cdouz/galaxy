@@ -107,4 +107,11 @@ class AuthServiceImplTest {
         assertThatThrownBy(() -> authService.login(LoginRequest.builder().email("alice@example.com").password("wrong").build()))
                 .isInstanceOf(InvalidCredentialsException.class);
     }
+
+    @Test
+    void logoutRevokesTheTokensIssuedSoFar() {
+        authService.logout(42L);
+
+        verify(userRepository).incrementTokenVersion(42L);
+    }
 }

@@ -112,6 +112,20 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
+    void doesNotAuthenticateWhenTheTokenVersionIsStale() throws Exception {
+        String token = jwtService.generateToken(aUser());
+        User loggedOut = aUser();
+        loggedOut.setTokenVersion(1L);
+        when(request.getCookies()).thenReturn(new Cookie[]{new Cookie(JwtService.ACCESS_TOKEN_COOKIE, token)});
+        when(userRepository.findById(42L)).thenReturn(Optional.of(loggedOut));
+
+        filter.doFilter(request, response, filterChain);
+
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+        verify(filterChain).doFilter(request, response);
+    }
+
+    @Test
     void doesNotAuthenticateWhenTokenCookieIsBlank() throws Exception {
         when(request.getCookies()).thenReturn(new Cookie[]{new Cookie(JwtService.ACCESS_TOKEN_COOKIE, "")});
 

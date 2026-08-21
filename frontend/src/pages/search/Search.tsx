@@ -93,7 +93,7 @@ const Search = () => {
               <li key={note.id}>
                 <Link
                   to={`/note/${note.id}/view`}
-                  className="flex flex-col gap-1 rounded-lg px-4 py-3 hover:bg-[hsl(var(--secondary))] text-foreground"
+                  className="flex flex-col gap-1 rounded-lg px-4 py-3 hover:bg-secondary text-foreground"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-medium truncate">{note.title}</span>
@@ -103,12 +103,12 @@ const Search = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     {note.matchedTitle && (
-                      <span className="text-xs rounded-full px-2 py-0.5 bg-milk text-[var(--milk-foreground)]">
+                      <span className="text-xs rounded-full px-2 py-0.5 bg-milk text-milk-foreground">
                         title
                       </span>
                     )}
                     {note.matchedContent && (
-                      <span className="text-xs rounded-full px-2 py-0.5 bg-[hsl(var(--secondary))] text-secondary-foreground">
+                      <span className="text-xs rounded-full px-2 py-0.5 bg-secondary text-secondary-foreground">
                         content
                       </span>
                     )}

@@ -27,7 +27,7 @@ const WikiLinkAutocomplete = ({ suggestions, selectedIndex, position, onSelect }
             }}
             className={cn(
               "w-full text-left px-3 py-1.5 text-sm truncate",
-              index === selectedIndex ? "bg-[hsl(var(--secondary))]" : "hover:bg-[hsl(var(--secondary))]"
+              index === selectedIndex ? "bg-secondary" : "hover:bg-secondary"
             )}
           >
             {note.title}

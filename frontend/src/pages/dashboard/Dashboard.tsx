@@ -62,7 +62,7 @@ const Dashboard = () => {
                   <li key={note.id}>
                     <Link
                       to={`/note/${note.id}/view`}
-                      className="flex items-center justify-between rounded-lg px-4 py-3 hover:bg-[hsl(var(--secondary))] text-foreground"
+                      className="flex items-center justify-between rounded-lg px-4 py-3 hover:bg-secondary text-foreground"
                     >
                       <span>{note.title}</span>
                       <span className="text-xs text-muted-foreground">

@@ -40,6 +40,11 @@ export default {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        // Not an hsl triplet like the shadcn tokens: --milk holds a hex value.
+        milk: {
+          DEFAULT: "var(--milk)",
+          foreground: "var(--milk-foreground)",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -1,12 +1,10 @@
 name: CI/CD Galaxy
 
-# Déclencheur : à chaque push sur la branche main
 on:
   push:
     branches: [ main ]
 
 jobs:
-  # ===== JOB 1 : Tests (Intégration Continue) =====
   test:
     runs-on: ubuntu-latest
     steps:
@@ -24,9 +22,8 @@ jobs:
         working-directory: ./backend
         run: mvn clean verify
 
-  # ===== JOB 2 : Déploiement (Déploiement Continu) =====
   deploy:
-    needs: test          # ne s'exécute QUE si le job "test" a réussi
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Déployer sur le VPS via SSH
@@ -38,5 +35,5 @@ jobs:
           script: |
             cd /home/deploy/galaxy
             git pull origin main
-            docker compose up -d --build
+            docker compose --profile prod up -d --build
             docker image prune -f

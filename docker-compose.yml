@@ -8,6 +8,8 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"     # exposé en dev ; en prod on ne définit pas MYSQL_PORT... voir note
     volumes:
       - mysql_data:/var/lib/mysql
     command:
@@ -27,8 +29,9 @@ services:
       dockerfile: Dockerfile
     container_name: galaxy-back
     restart: unless-stopped
+    profiles: ["prod"]      # <-- ne démarre QUE avec le profil prod
     environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_PROFILES_ACTIVE: prod
       DB_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
       DB_USERNAME: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
@@ -45,6 +48,7 @@ services:
       dockerfile: Dockerfile.nginx
     container_name: galaxy-nginx
     restart: unless-stopped
+    profiles: ["prod"]
     ports:
       - "80:80"
       - "443:443"

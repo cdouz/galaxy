@@ -1,0 +1,42 @@
+name: CI/CD Galaxy
+
+# Déclencheur : à chaque push sur la branche main
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # ===== JOB 1 : Tests (Intégration Continue) =====
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Compiler et tester le back
+        working-directory: ./backend
+        run: mvn clean verify
+
+  # ===== JOB 2 : Déploiement (Déploiement Continu) =====
+  deploy:
+    needs: test          # ne s'exécute QUE si le job "test" a réussi
+    runs-on: ubuntu-latest
+    steps:
+      - name: Déployer sur le VPS via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /home/deploy/galaxy
+            git pull origin main
+            docker compose up -d --build
+            docker image prune -f

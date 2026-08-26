@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
+import { ArrowLeft, Pencil } from "lucide-react"
 import NoteVueContainer from "@/components/NoteVueContainer/NoteVueContainer"
 import BacklinksPanel from "@/components/BacklinksPanel/BacklinksPanel"
 import { Button } from "@/components/ui/button"
@@ -38,25 +39,38 @@ const NoteView = () => {
   }, [id])
 
   return (
-    <div className="flex flex-col h-screen p-4">
-        <div className="flex items-center justify-between gap-4 mb-4">
-            <h1 className="text-4xl font-bold text-foreground">{title || "Untitled"}</h1>
-            <div className="flex items-center gap-2 shrink-0">
-                <Button variant="outline" asChild>
-                    <Link to="/dashboard">Back to dashboard</Link>
+    <div className="flex h-screen flex-col gap-4 overflow-y-auto p-4 md:p-6">
+        <header className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+            <h1 className="min-w-0 break-words text-3xl font-bold text-foreground md:text-4xl">{title || "Untitled"}</h1>
+            <div className="flex shrink-0 items-center gap-2">
+                <Button size="lg" variant="outline" asChild className="flex-1 px-5 lg:flex-none lg:px-8">
+                    <Link to="/dashboard">
+                        <ArrowLeft />
+                        Dashboard
+                    </Link>
                 </Button>
                 {id && !error && (
-                    <Button asChild>
-                        <Link to={`/note/${id}`}>Edit</Link>
+                    <Button size="lg" asChild className="flex-1 px-5 lg:flex-none lg:px-8">
+                        <Link to={`/note/${id}`}>
+                            <Pencil />
+                            Edit
+                        </Link>
                     </Button>
                 )}
             </div>
-        </div>
+        </header>
         {isLoading && <p className="text-muted-foreground">Loading note...</p>}
         {error && <p className="text-destructive">{error}</p>}
         {!isLoading && !error && (
           <>
-            <NoteVueContainer content={content} notes={notes} notesLoading={notesLoading} onError={setError} refreshNotes={refreshNotes} />
+            <NoteVueContainer
+              content={content}
+              notes={notes}
+              notesLoading={notesLoading}
+              onError={setError}
+              refreshNotes={refreshNotes}
+              className="min-h-[45vh] flex-1"
+            />
             <BacklinksPanel backlinks={backlinks} isLoading={isLoadingBacklinks} />
           </>
         )}

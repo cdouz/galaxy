@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { ApiError } from "@/lib/api"
 import { createNote, type Note } from "@/lib/note-api"
 import { resolveWikiLinkTitle, transformWikiLinks, WIKILINK_HREF_PREFIX } from "@/lib/wikilinks"
+import { cn } from "@/lib/utils"
 import './NoteVueContainer.css'
 
 type Props = {
@@ -15,9 +16,11 @@ type Props = {
   refreshNotes?: () => Promise<Note[]>
   /** Asked before leaving the page, so an editor can protect an unsaved draft. */
   confirmNavigation?: () => boolean
+  /** Sizing is left to the page, which owns the editor/preview split. */
+  className?: string
 }
 
-const NoteVueContainer = ({ content, notes, notesLoading, onError, refreshNotes, confirmNavigation }: Props) => {
+const NoteVueContainer = ({ content, notes, notesLoading, onError, refreshNotes, confirmNavigation, className }: Props) => {
   const navigate = useNavigate()
 
   const handleWikiLinkClick = async (title: string) => {
@@ -54,7 +57,7 @@ const NoteVueContainer = ({ content, notes, notesLoading, onError, refreshNotes,
     url.startsWith(WIKILINK_HREF_PREFIX) ? url : defaultUrlTransform(url)
 
   return (
-    <div className="nvc p-6 overflow-y-auto prose prose-invert max-w-none">
+    <div className={cn("nvc prose max-w-none overflow-y-auto p-4 md:p-6", className)}>
       <Markdown
         remarkPlugins={[remarkBreaks]}
         urlTransform={urlTransform}

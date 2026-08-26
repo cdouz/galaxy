@@ -30,6 +30,8 @@
     --milk: #FBE4D6;
     --milk-foreground: #020218;
     --black: #020218;
+    /* Panel surface that sits just above the page background in every theme. */
+    --surface: 239 55% 22%;
   }
 
   :root[data-theme="dark"] {
@@ -55,6 +57,7 @@
     --milk: #F5F5F5;
     --milk-foreground: #0a0a0a;
     --black: #000000;
+    --surface: 0 0% 9%;
   }
 
   :root[data-theme="light"] {
@@ -80,6 +83,7 @@
     --milk: #1a1a1a;
     --milk-foreground: #f5f5f5;
     --black: #1a1a1a;
+    --surface: 0 0% 99%;
   }
 
   * {

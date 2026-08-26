@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { Eye, Save, Trash2 } from "lucide-react"
 import NoteContentContainer from "@/components/NoteContentContainer/NoteContentContainer"
 import NoteVueContainer from "@/components/NoteVueContainer/NoteVueContainer"
 import Sidebar from "@/components/Sidebar/Sidebar"
-import './note.css'
 import { Button } from "@/components/ui/button"
 import { ApiError } from "@/lib/api"
 import { createNote, deleteNote, getNote, updateNote } from "@/lib/note-api"
@@ -90,35 +90,66 @@ const NoteEditor = ({ id }: { id?: string }) => {
     navigate(`/note/${noteId}/view`)
   }
 
+  const status = isDirty ? "Unsaved changes" : noteId ? "All changes saved" : "New note"
+
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
         <Sidebar />
-        <div className="flex flex-col p-4 w-full">
-            <input
-                type="text"
-                name="title"
-                id="title"
-                placeholder="Note Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                disabled={isLoading}
-                className="bg-transparent border-none text-4xl font-bold text-foreground placeholder:text-muted-foreground focus:outline-none mb-4"
-            />
-            {error && <p className="text-destructive mb-4">{error}</p>}
-            <div className="note-container flex items-center gap-4 ">
-                <NoteContentContainer value={content} onChange={setContent} notes={notes} />
-                <NoteVueContainer content={content} notes={notes} notesLoading={notesLoading} onError={setError} refreshNotes={refreshNotes} confirmNavigation={confirmNavigation} />
-                <div className="flex flex-col gap-2">
-                    <Button variant="default" onClick={handleSave} disabled={isSaving || isLoading || !title.trim()}>
+        {/* Scrolls as one column on phones; on desktop only the panels scroll. */}
+        <div className="flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-4 lg:overflow-hidden lg:p-6">
+            <header className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+                <div className="flex min-w-0 flex-col">
+                    <input
+                        type="text"
+                        name="title"
+                        id="title"
+                        placeholder="Note Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        disabled={isLoading}
+                        className="w-full bg-transparent border-none text-3xl font-bold text-foreground placeholder:text-muted-foreground focus:outline-none md:text-4xl"
+                    />
+                    <p className="mt-1 text-xs text-muted-foreground">{status}</p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                    <Button size="lg" onClick={handleSave} disabled={isSaving || isLoading || !title.trim()} className="flex-1 px-5 lg:flex-none lg:px-8">
+                        <Save />
                         {isSaving ? "Saving..." : "Save"}
                     </Button>
-                    <Button variant="destructive" onClick={handleDelete} disabled={!noteId}>
-                        Delete
-                    </Button>
-                    <Button variant="outline" onClick={handleView} disabled={!noteId}>
+                    <Button size="lg" variant="outline" onClick={handleView} disabled={!noteId} className="flex-1 px-5 lg:flex-none lg:px-8">
+                        <Eye />
                         View
                     </Button>
+                    <Button
+                        size="lg"
+                        variant="outline"
+                        onClick={handleDelete}
+                        disabled={!noteId}
+                        className="flex-1 px-5 text-destructive hover:bg-destructive hover:text-destructive-foreground lg:flex-none lg:px-8"
+                    >
+                        <Trash2 />
+                        Delete
+                    </Button>
                 </div>
+            </header>
+            {error && <p className="text-destructive">{error}</p>}
+            {/* Stacked on phones -- editor first, preview under it -- side by side from md up. */}
+            <div className="flex min-h-0 flex-1 flex-col gap-4 md:flex-row">
+                <NoteContentContainer
+                    value={content}
+                    onChange={setContent}
+                    notes={notes}
+                    className="min-h-[45vh] md:min-h-0 md:w-1/2"
+                />
+                <NoteVueContainer
+                    content={content}
+                    notes={notes}
+                    notesLoading={notesLoading}
+                    onError={setError}
+                    refreshNotes={refreshNotes}
+                    confirmNavigation={confirmNavigation}
+                    className="min-h-[45vh] md:min-h-0 md:w-1/2"
+                />
             </div>
         </div>
     </div>

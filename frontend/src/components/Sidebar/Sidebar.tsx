@@ -1,8 +1,9 @@
-import { Settings, LayoutDashboard, Plus, Search, Waypoints, Info, LogOut, ArrowLeft } from "lucide-react"
+import { Settings, LayoutDashboard, Plus, Search, Waypoints, Info, LogOut } from "lucide-react"
 import { useEffect, useState } from "react"
-import { NavLink, useLocation, useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "@/hooks/useAuth"
 import Logo from "@/components/Logo/Logo"
+import BackButton from "@/components/BackButton/BackButton"
 import { getRecentNotes, type Note } from "@/lib/note-api"
 import './sidebar.css'
 
@@ -41,24 +42,6 @@ const Item = ({ icon, label, to, expanded }: SidebarItem & { expanded: boolean }
     </span>
   </NavLink>
 )
-
-const BackButton = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  // A direct hit on a public page has no history entry to pop back to.
-  const goBack = () => (location.key === "default" ? navigate("/") : navigate(-1))
-
-  return (
-    <button
-      onClick={goBack}
-      className="fixed left-4 top-4 z-20 flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-    >
-      <ArrowLeft size={18} />
-      Back
-    </button>
-  )
-}
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false)
@@ -101,8 +84,7 @@ const Sidebar = () => {
         aria-label="Galaxy"
         className={`mb-3 flex items-center rounded-lg py-2 transition-colors hover:bg-secondary ${rowLayout(expanded)}`}
       >
-        {/* The sidebar keeps a dark background in every theme, so pin the white mark. */}
-        <Logo tone="white" className="h-8 w-auto" alt="" />
+        <Logo tone="on-primary" className="h-8 w-auto" alt="" />
         <span className={`jacques-francois overflow-hidden whitespace-nowrap text-2xl leading-none text-milk transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>
           Galaxy
         </span>

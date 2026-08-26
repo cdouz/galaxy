@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import BackButton from "@/components/BackButton/BackButton"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/hooks/useAuth"
 import { ApiError } from "@/lib/api"
@@ -32,6 +33,7 @@ const Register = () => {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-6">
+      <BackButton to="/" />
       <h1 className="jacques-francois text-milk text-4xl">Register</h1>
 
       <form onSubmit={handleSubmit} className="flex w-full max-w-sm flex-col gap-4">

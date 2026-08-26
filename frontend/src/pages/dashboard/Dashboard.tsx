@@ -28,11 +28,6 @@ const Dashboard = () => {
       .finally(() => setIsLoading(false))
   }, [])
 
-  // How tangled the galaxy is: an isolated note pulls this down, a hub pushes it up.
-  const density = stats && stats.noteCount > 0
-    ? (stats.linkCount / stats.noteCount).toFixed(1)
-    : "0"
-
   return (
     <div className="flex h-screen">
       <Sidebar />
@@ -55,10 +50,9 @@ const Dashboard = () => {
 
           {!isLoading && !error && stats && (
             <>
-              <div className="mt-12 grid w-full grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="mt-12 grid w-full max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
                 <Stat label={stats.noteCount === 1 ? "Note" : "Notes"} value={stats.noteCount} />
                 <Stat label={stats.linkCount === 1 ? "Link" : "Links"} value={stats.linkCount} />
-                <Stat label="Links per note" value={density} />
               </div>
 
               <div className="mt-10 grid w-full max-w-lg grid-cols-1 gap-4 sm:grid-cols-2">

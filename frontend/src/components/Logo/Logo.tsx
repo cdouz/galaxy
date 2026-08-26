@@ -5,18 +5,22 @@ import { cn } from "@/lib/utils"
 
 type LogoProps = {
   /**
-   * "auto" follows the active theme (blue mark on light, white mark elsewhere).
-   * Force a tone when the surface colour does not follow the theme, e.g. the
-   * sidebar, which stays dark in every theme.
+   * "auto" follows the page background (blue mark on light, white elsewhere).
+   * "on-primary" is for surfaces painted with --primary, such as the sidebar:
+   * that token is a near-white in the dark theme and dark in the other two, so
+   * the mark inverts relative to "auto" there.
    */
-  tone?: "auto" | "white" | "blue"
+  tone?: "auto" | "white" | "blue" | "on-primary"
   className?: string
   alt?: string
 }
 
 const Logo = ({ tone = "auto", className, alt = "Galaxy" }: LogoProps) => {
   const { theme } = useTheme()
-  const useBlue = tone === "blue" || (tone === "auto" && theme === "light")
+  const useBlue =
+    tone === "blue" ||
+    (tone === "auto" && theme === "light") ||
+    (tone === "on-primary" && theme === "dark")
 
   return (
     <img

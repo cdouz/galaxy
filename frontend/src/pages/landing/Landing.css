@@ -1,7 +1,122 @@
-.landing{
+.landing {
+    isolation: isolate;
+}
 
-    h1{
-        font-size: 4rem;
-        line-height: 1.2;
+/* Star field: two tiled layers drifting at different speeds for a bit of depth. */
+.landing-sky,
+.landing-glow {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.landing-sky {
+    inset: -25%;
+    opacity: 0.7;
+    background-repeat: repeat;
+    background-image:
+        radial-gradient(1.6px 1.6px at 12% 18%, #fff, transparent 100%),
+        radial-gradient(1.2px 1.2px at 68% 12%, #fff, transparent 100%),
+        radial-gradient(1px 1px at 34% 47%, #fff, transparent 100%),
+        radial-gradient(1.4px 1.4px at 88% 62%, #fff, transparent 100%),
+        radial-gradient(1px 1px at 52% 82%, #fff, transparent 100%),
+        radial-gradient(1.8px 1.8px at 21% 74%, #fff, transparent 100%),
+        radial-gradient(1px 1px at 79% 33%, #fff, transparent 100%),
+        radial-gradient(1.2px 1.2px at 6% 91%, #fff, transparent 100%);
+    background-size: 320px 320px;
+    animation: landing-drift 180s linear infinite;
+}
+
+.landing-sky::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.55;
+    background-repeat: repeat;
+    background-image:
+        radial-gradient(1px 1px at 44% 22%, #fff, transparent 100%),
+        radial-gradient(1px 1px at 8% 58%, #fff, transparent 100%),
+        radial-gradient(1.4px 1.4px at 73% 78%, #fff, transparent 100%),
+        radial-gradient(1px 1px at 92% 8%, #fff, transparent 100%),
+        radial-gradient(1px 1px at 27% 95%, #fff, transparent 100%);
+    background-size: 560px 560px;
+    animation: landing-drift-slow 320s linear infinite reverse;
+}
+
+/* Nebula behind the hero mark. */
+.landing-glow {
+    top: -18rem;
+    left: 50%;
+    height: 44rem;
+    width: 44rem;
+    translate: -50% 0;
+    border-radius: 9999px;
+    filter: blur(40px);
+    opacity: 0.3;
+    background: radial-gradient(circle, hsl(var(--ring) / 0.55), transparent 65%);
+}
+
+.landing-mark {
+    animation: landing-float 9s ease-in-out infinite;
+}
+
+.landing-card {
+    background-color: hsl(var(--card) / 0.55);
+    backdrop-filter: blur(6px);
+}
+
+.landing-card:hover {
+    border-color: hsl(var(--ring));
+}
+
+/* The white star layers disappear on a white page, so swap the sky out. */
+:root[data-theme="light"] .landing-sky {
+    display: none;
+}
+
+:root[data-theme="light"] .landing-glow {
+    display: none;
+}
+
+/* The hero has to fit one viewport, so the extras go first when it gets short. */
+@media (max-height: 640px) {
+    .landing-features {
+        display: none;
+    }
+}
+
+@keyframes landing-drift {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 320px 640px;
+    }
+}
+
+@keyframes landing-drift-slow {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 560px 1120px;
+    }
+}
+
+@keyframes landing-float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .landing-sky,
+    .landing-sky::after,
+    .landing-mark {
+        animation: none;
     }
 }

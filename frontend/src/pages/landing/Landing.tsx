@@ -33,7 +33,7 @@ const Landing = () => {
           <Logo className="h-10 w-auto" />
           <span className="jacques-francois text-milk text-3xl leading-none">Galaxy</span>
         </span>
-        <Button variant="ghost" size="sm" asChild className="text-milk">
+        <Button variant="ghost" size="lg" asChild className="text-milk text-base">
           <Link to="/about">About</Link>
         </Button>
       </header>
@@ -44,7 +44,7 @@ const Landing = () => {
         <h1 className="jacques-francois text-milk text-4xl leading-tight sm:text-5xl">
           Connect your stars
           <br />
-          Reveal a galaxy
+          <span className="italic">Reveal a galaxy</span>
         </h1>
 
         <p className="max-w-xl text-sm text-muted-foreground sm:text-base">

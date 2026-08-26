@@ -1,6 +1,6 @@
-import { Settings, LayoutDashboard, Plus, Search, Waypoints, Info, LogOut } from "lucide-react"
+import { Settings, LayoutDashboard, Plus, Search, Waypoints, Info, LogOut, ArrowLeft } from "lucide-react"
 import { useEffect, useState } from "react"
-import { NavLink, useNavigate } from "react-router-dom"
+import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "@/hooks/useAuth"
 import Logo from "@/components/Logo/Logo"
 import { getRecentNotes, type Note } from "@/lib/note-api"
@@ -42,11 +42,29 @@ const Item = ({ icon, label, to, expanded }: SidebarItem & { expanded: boolean }
   </NavLink>
 )
 
+const BackButton = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  // A direct hit on a public page has no history entry to pop back to.
+  const goBack = () => (location.key === "default" ? navigate("/") : navigate(-1))
+
+  return (
+    <button
+      onClick={goBack}
+      className="fixed left-4 top-4 z-20 flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+    >
+      <ArrowLeft size={18} />
+      Back
+    </button>
+  )
+}
+
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false)
   const [recentNotes, setRecentNotes] = useState<Note[]>([])
   const [notesLoading, setNotesLoading] = useState(true)
-  const { user, logout } = useAuth()
+  const { user, isLoading: authLoading, logout } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -58,11 +76,19 @@ const Sidebar = () => {
   }
 
   useEffect(() => {
+    if (!user) return
     getRecentNotes()
       .then(setRecentNotes)
       .catch(() => setRecentNotes([]))
       .finally(() => setNotesLoading(false))
-  }, [])
+  }, [user])
+
+  // Nothing until the session check lands, so a signed-in user never sees the
+  // signed-out rail flash by first.
+  if (authLoading) return null
+
+  // About is public: without a session there is nothing to navigate to here.
+  if (!user) return <BackButton />
 
   return (
     <aside
@@ -116,17 +142,16 @@ const Sidebar = () => {
         {bottomItems.map((item) => (
           <Item key={item.to} {...item} expanded={expanded} />
         ))}
-        {user && (
-          <button
-            onClick={handleLogout}
-            className={`flex w-full items-center rounded-lg py-2 text-left transition-colors hover:bg-secondary text-muted-foreground ${rowLayout(expanded)}`}
-          >
-            <span className="shrink-0"><LogOut size={18} /></span>
-            <span className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>
-              Logout
-            </span>
-          </button>
-        )}
+        <button
+          onClick={handleLogout}
+          title="Logout"
+          className={`flex w-full items-center rounded-lg py-2 text-left transition-colors hover:bg-secondary text-muted-foreground ${rowLayout(expanded)}`}
+        >
+          <span className="shrink-0"><LogOut size={18} /></span>
+          <span className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>
+            Logout
+          </span>
+        </button>
       </nav>
     </aside>
   )

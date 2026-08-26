@@ -8,7 +8,8 @@ import { getGraph, type GraphData, type GraphLink, type GraphNode } from "@/lib/
 
 const NODE_RADIUS = 5
 const LABEL_FONT_PX = 12
-const LABEL_OFFSET_PX = 9
+/** Gap in screen pixels between the bottom of the dot and the top of its label. */
+const LABEL_GAP_PX = 5
 /** Clicking is a little forgiving: the hit area is slightly wider than the dot. */
 const POINTER_AREA_PADDING = 3
 
@@ -96,7 +97,11 @@ const Graph = () => {
     ctx.textAlign = "center"
     ctx.textBaseline = "top"
     ctx.fillStyle = palette.label
-    ctx.fillText(node.title, x, y + LABEL_OFFSET_PX / globalScale)
+    // The dot is drawn in graph units, so it grows with the zoom while the label
+    // does not. Anchoring the label to the dot's edge -- NODE_RADIUS in graph
+    // units -- and adding a gap that shrinks with the zoom leaves the same clear
+    // few pixels under the star whatever the zoom level.
+    ctx.fillText(node.title, x, y + NODE_RADIUS + LABEL_GAP_PX / globalScale)
   }
 
   // Custom-drawn nodes get no hit area for free; this one matches the dot, so a

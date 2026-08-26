@@ -24,11 +24,15 @@ const bottomItems: SidebarItem[] = [
   { icon: <Info size={18} />, label: "About", to: "/about" }
 ]
 
+const rowLayout = (expanded: boolean) =>
+  expanded ? "gap-3 px-3 justify-start" : "gap-0 px-0 justify-center"
+
 const Item = ({ icon, label, to, expanded }: SidebarItem & { expanded: boolean }) => (
   <NavLink
     to={to}
+    title={label}
     className={({ isActive }) =>
-      `flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-secondary ${isActive ? "bg-milk text-milk-foreground" : "text-muted-foreground"}`
+      `flex items-center rounded-lg py-2 transition-colors hover:bg-secondary ${rowLayout(expanded)} ${isActive ? "bg-milk text-milk-foreground" : "text-muted-foreground"}`
     }
   >
     <span className="shrink-0">{icon}</span>
@@ -62,18 +66,18 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`flex h-screen flex-col px-2 py-4 transition-all duration-200 overflow-hidden shrink-0 ${expanded ? "w-44" : "w-12"}`}
+      className={`flex h-screen flex-col px-2 py-4 transition-all duration-200 overflow-hidden shrink-0 ${expanded ? "w-48" : "w-14"}`}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
       <NavLink
         to="/dashboard"
         aria-label="Galaxy"
-        className="mb-3 flex items-center gap-3 rounded-lg px-2 py-1 transition-colors hover:bg-secondary"
+        className={`mb-3 flex items-center rounded-lg py-2 transition-colors hover:bg-secondary ${rowLayout(expanded)}`}
       >
         {/* The sidebar keeps a dark background in every theme, so pin the white mark. */}
-        <Logo tone="white" className="h-8 w-8" alt="" />
-        <span className={`jacques-francois overflow-hidden whitespace-nowrap text-lg text-milk transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>
+        <Logo tone="white" className="h-8 w-auto" alt="" />
+        <span className={`jacques-francois overflow-hidden whitespace-nowrap text-2xl leading-none text-milk transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>
           Galaxy
         </span>
       </NavLink>
@@ -85,21 +89,21 @@ const Sidebar = () => {
       <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
         {expanded && (
           <div className="flex flex-col gap-1 pt-2">
-            <p className="px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground/70">
+            <p className="px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground/70">
               Recent
             </p>
             {notesLoading && (
-              <p className="px-2 py-2 text-sm text-muted-foreground">Loading…</p>
+              <p className="px-3 py-2 text-sm text-muted-foreground">Loading…</p>
             )}
             {!notesLoading && recentNotes.length === 0 && (
-              <p className="px-2 py-2 text-sm text-muted-foreground">No notes yet</p>
+              <p className="px-3 py-2 text-sm text-muted-foreground">No notes yet</p>
             )}
             {!notesLoading && recentNotes.map((note) => (
               <NavLink
                 key={note.id}
                 to={`/note/${note.id}/view`}
                 className={({ isActive }) =>
-                  `truncate rounded-lg px-2 py-2 text-sm transition-colors hover:bg-secondary ${isActive ? "bg-milk text-milk-foreground" : "text-muted-foreground"}`
+                  `truncate rounded-lg px-3 py-2 text-sm transition-colors hover:bg-secondary ${isActive ? "bg-milk text-milk-foreground" : "text-muted-foreground"}`
                 }
               >
                 {note.title}
@@ -115,7 +119,7 @@ const Sidebar = () => {
         {user && (
           <button
             onClick={handleLogout}
-            className="flex w-full items-center justify-start gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-secondary text-muted-foreground"
+            className={`flex w-full items-center rounded-lg py-2 text-left transition-colors hover:bg-secondary text-muted-foreground ${rowLayout(expanded)}`}
           >
             <span className="shrink-0"><LogOut size={18} /></span>
             <span className={`overflow-hidden whitespace-nowrap text-sm font-medium transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>

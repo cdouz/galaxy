@@ -25,7 +25,7 @@ const Dashboard = () => {
       <Sidebar />
       <div className="flex flex-col w-full p-8 overflow-y-auto">
         <header className="mb-8 flex items-center gap-4">
-          <Logo className="h-14 w-14 sm:h-16 sm:w-16" alt="" />
+          <Logo className="h-16 w-auto sm:h-20" alt="" />
           <div>
             <h1 className="text-3xl font-bold text-milk">Welcome{user ? `, ${user.username}` : ""}</h1>
             <p className="text-sm text-muted-foreground">Here is the state of your galaxy.</p>

@@ -52,12 +52,11 @@
     translate: -50% 0;
     border-radius: 9999px;
     filter: blur(40px);
-    opacity: 0.45;
+    opacity: 0.3;
     background: radial-gradient(circle, hsl(var(--ring) / 0.55), transparent 65%);
 }
 
 .landing-mark {
-    filter: drop-shadow(0 0 28px hsl(var(--ring) / 0.55));
     animation: landing-float 9s ease-in-out infinite;
 }
 
@@ -76,7 +75,14 @@
 }
 
 :root[data-theme="light"] .landing-glow {
-    opacity: 0.12;
+    display: none;
+}
+
+/* The hero has to fit one viewport, so the extras go first when it gets short. */
+@media (max-height: 640px) {
+    .landing-features {
+        display: none;
+    }
 }
 
 @keyframes landing-drift {

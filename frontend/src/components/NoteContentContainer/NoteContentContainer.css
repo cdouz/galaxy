@@ -1,8 +1,6 @@
-.ncc{
-    border: 1px solid black;
-    border-radius: 10px;
-    background-color:var(--milk);
-    color:var(--milk-foreground);
-    height: 80%;
-    width: 40%;
+.ncc {
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    background-color: hsl(var(--surface));
+    color: hsl(var(--foreground));
 }

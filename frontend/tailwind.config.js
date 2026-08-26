@@ -45,6 +45,7 @@ export default {
           DEFAULT: "var(--milk)",
           foreground: "var(--milk-foreground)",
         },
+        surface: "hsl(var(--surface))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

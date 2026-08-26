@@ -8,7 +8,7 @@ type Props = {
 
 const BacklinksPanel = ({ backlinks, isLoading }: Props) => {
   return (
-    <div className="mt-6">
+    <div className="mt-2">
       <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
         Linked mentions
       </h2>

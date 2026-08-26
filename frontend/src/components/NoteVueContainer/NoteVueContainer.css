@@ -1,15 +1,33 @@
-.nvc{
-    border: 1px solid black;
-    border-radius: 10px;
-    background-color:var(--black);
-    height: 80%;
-    width: 40%;
+.nvc {
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    background-color: hsl(var(--surface));
+    color: hsl(var(--foreground));
+
+    /* Tailwind Typography ships fixed greys; point them at the theme tokens so
+       the rendered markdown follows galaxy / dark / light like the rest of the page. */
+    --tw-prose-body: hsl(var(--foreground));
+    --tw-prose-headings: hsl(var(--foreground));
+    --tw-prose-lead: hsl(var(--muted-foreground));
+    --tw-prose-links: hsl(var(--foreground));
+    --tw-prose-bold: hsl(var(--foreground));
+    --tw-prose-counters: hsl(var(--muted-foreground));
+    --tw-prose-bullets: hsl(var(--muted-foreground));
+    --tw-prose-hr: hsl(var(--border));
+    --tw-prose-quotes: hsl(var(--foreground));
+    --tw-prose-quote-borders: hsl(var(--border));
+    --tw-prose-captions: hsl(var(--muted-foreground));
+    --tw-prose-code: hsl(var(--foreground));
+    --tw-prose-pre-code: hsl(var(--foreground));
+    --tw-prose-pre-bg: hsl(var(--muted));
+    --tw-prose-th-borders: hsl(var(--border));
+    --tw-prose-td-borders: hsl(var(--border));
 }
 
 .nvc .wikilink {
     cursor: pointer;
     text-decoration: none;
-    color: var(--milk);
+    color: hsl(var(--secondary-foreground));
     background-color: hsl(var(--secondary));
     border-radius: 4px;
     padding: 0 0.2em;

@@ -3,15 +3,18 @@ import WikiLinkAutocomplete from "@/components/WikiLinkAutocomplete/WikiLinkAuto
 import { useWikiLinkAutocomplete } from "@/hooks/useWikiLinkAutocomplete"
 import { getCaretCoordinates, type CaretCoordinates } from "@/lib/caret-position"
 import type { Note } from "@/lib/note-api"
+import { cn } from "@/lib/utils"
 import './NoteContentContainer.css'
 
 type Props = {
   value: string
   onChange: (value: string) => void
   notes: Note[]
+  /** Sizing is left to the page, which owns the editor/preview split. */
+  className?: string
 }
 
-const NoteContentContainer = ({ value, onChange, notes }: Props) => {
+const NoteContentContainer = ({ value, onChange, notes, className }: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [caretCoordinates, setCaretCoordinates] = useState<CaretCoordinates | null>(null)
   const { isOpen, suggestions, selectedIndex, handleSelectionChange, moveSelection, commit, close } =
@@ -63,7 +66,7 @@ const NoteContentContainer = ({ value, onChange, notes }: Props) => {
   }
 
   return (
-      <div className="ncc border-r border-border relative">
+      <div className={cn("ncc relative flex min-h-0 flex-col overflow-hidden", className)}>
         <textarea
           ref={textareaRef}
           value={value}
@@ -77,7 +80,7 @@ const NoteContentContainer = ({ value, onChange, notes }: Props) => {
           }}
           onClick={(e) => syncSelection(e.currentTarget)}
           onBlur={dismiss}
-          className="w-full h-full resize-none bg-transparent p-6 font-mono text-sm outline-none"
+          className="h-full w-full flex-1 resize-none bg-transparent p-4 font-mono text-sm leading-relaxed outline-none placeholder:text-muted-foreground md:p-6"
           placeholder="Write markdown here..."
         />
         {isOpen && caretCoordinates && (

@@ -2,6 +2,7 @@ import { Settings, LayoutDashboard, Plus, Search, Waypoints, Info, LogOut } from
 import { useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "@/hooks/useAuth"
+import Logo from "@/components/Logo/Logo"
 import { getRecentNotes, type Note } from "@/lib/note-api"
 import './sidebar.css'
 
@@ -65,6 +66,17 @@ const Sidebar = () => {
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
+      <NavLink
+        to="/dashboard"
+        aria-label="Galaxy"
+        className="mb-3 flex items-center gap-3 rounded-lg px-2 py-1 transition-colors hover:bg-secondary"
+      >
+        {/* The sidebar keeps a dark background in every theme, so pin the white mark. */}
+        <Logo tone="white" className="h-8 w-8" alt="" />
+        <span className={`jacques-francois overflow-hidden whitespace-nowrap text-lg text-milk transition-all duration-200 ${expanded ? "opacity-100 w-24" : "opacity-0 w-0"}`}>
+          Galaxy
+        </span>
+      </NavLink>
       <nav className="flex flex-col gap-1">
         {topItems.map((item) => (
           <Item key={item.to} {...item} expanded={expanded} />

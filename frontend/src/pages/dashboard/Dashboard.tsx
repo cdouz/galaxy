@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import Sidebar from "@/components/Sidebar/Sidebar"
+import Logo from "@/components/Logo/Logo"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth"
 import { getDashboardStats, type DashboardStats } from "@/lib/dashboard-api"
@@ -23,7 +24,13 @@ const Dashboard = () => {
     <div className="flex h-screen">
       <Sidebar />
       <div className="flex flex-col w-full p-8 overflow-y-auto">
-        <h1 className="text-3xl font-bold text-milk mb-6">Welcome{user ? `, ${user.username}` : ""}</h1>
+        <header className="mb-8 flex items-center gap-4">
+          <Logo className="h-14 w-14 sm:h-16 sm:w-16" alt="" />
+          <div>
+            <h1 className="text-3xl font-bold text-milk">Welcome{user ? `, ${user.username}` : ""}</h1>
+            <p className="text-sm text-muted-foreground">Here is the state of your galaxy.</p>
+          </div>
+        </header>
 
         {isLoading && <p className="text-muted-foreground">Loading dashboard...</p>}
         {error && <p className="text-destructive">{error}</p>}

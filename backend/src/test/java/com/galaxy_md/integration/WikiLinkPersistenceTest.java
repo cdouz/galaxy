@@ -119,6 +119,12 @@ class WikiLinkPersistenceTest {
         syncWithDatabase();
         assertThat(linkRepository.findBySourceNoteId(source.getId())).hasSize(1);
 
+        // La cascade est portee par la cle etrangere, pas par Hibernate : il faut detacher les
+        // Link que l'assertion precedente vient de charger, sinon le flush refuse un Link gere
+        // dont la cible part en suppression (TransientPropertyValueException). En production le
+        // cas ne se pose pas : NoteServiceImpl.delete ne charge que la note.
+        entityManager.clear();
+
         noteService.delete(target.getId(), owner.getId());
         syncWithDatabase();
 

@@ -22,28 +22,10 @@ jobs:
         working-directory: ./backend
         run: mvn clean verify
 
-      - name: Résumé de couverture JaCoCo
-        if: always()
+      - name: Afficher la couverture de code
         working-directory: ./backend
         run: |
-          if [ ! -f target/site/jacoco/jacoco.csv ]; then
-            echo "Pas de rapport JaCoCo (les tests n'ont pas pu s'exécuter)." >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-          awk -F, 'NR>1 {im+=$4; ic+=$5; bm+=$6; bc+=$7; lm+=$8; lc+=$9} END {
-            printf "## Couverture JaCoCo\n\n| Métrique | Couverture |\n|---|---|\n"
-            printf "| Instructions | %.1f%% |\n", 100*ic/(im+ic)
-            printf "| Branches | %.1f%% |\n", 100*bc/(bm+bc)
-            printf "| Lignes | %.1f%% (%d/%d) |\n", 100*lc/(lm+lc), lc, lm+lc
-          }' target/site/jacoco/jacoco.csv >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Publier le rapport JaCoCo
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: rapport-jacoco
-          path: backend/target/site/jacoco/
-          if-no-files-found: warn
+          awk -F, '{m += $8; c += $9} END {print "Couverture des lignes :", int(100 * c / (m + c)) "%"}' target/site/jacoco/jacoco.csv
 
   deploy:
     needs: test

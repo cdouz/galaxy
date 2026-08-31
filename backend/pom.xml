@@ -156,6 +156,36 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.13</version>
+				<executions>
+					<!-- Instruments the classes before Surefire runs them. -->
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!-- Writes target/site/jacoco (html, xml, csv) right after the tests. -->
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+						<!-- Generated or declaration-only code: counting it would flatter the figure. -->
+						<exclude>com/galaxy_md/dto/**</exclude>
+						<exclude>com/galaxy_md/entity/**</exclude>
+						<exclude>com/galaxy_md/Application.class</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
